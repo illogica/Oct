@@ -36,7 +36,8 @@ public class KeysSelect extends AbstractAppState {
         "Increase step",
         "Decrease step",
         "MouseSelect",
-        "Ctrl"
+        "Ctrl",
+        "Shift"
     };
 
     private SimpleApplication app;
@@ -44,6 +45,7 @@ public class KeysSelect extends AbstractAppState {
     boolean dragToRotate = false;
     
     boolean ctrlPressed = false;
+    boolean shiftPressed = false;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -72,6 +74,8 @@ public class KeysSelect extends AbstractAppState {
         this.app.getInputManager().addMapping("Decrease step", new KeyTrigger(KeyInput.KEY_PGDN));
         this.app.getInputManager().addMapping("Ctrl", new KeyTrigger(KeyInput.KEY_LCONTROL));
         this.app.getInputManager().addMapping("Ctrl", new KeyTrigger(KeyInput.KEY_RCONTROL));
+        this.app.getInputManager().addMapping("Shift", new KeyTrigger(KeyInput.KEY_LSHIFT));
+        this.app.getInputManager().addMapping("Shift", new KeyTrigger(KeyInput.KEY_RSHIFT));
         
         this.app.getInputManager().addListener(actionListener, keyboardMappings);
         this.app.getInputManager().addListener(analogListener, mouseMappings);
@@ -107,6 +111,10 @@ public class KeysSelect extends AbstractAppState {
                 ctrlPressed = true;
             } else if(name.equals("Ctrl") && !keyPressed){
                 ctrlPressed = false;
+            } else if(name.equals("Shift") && keyPressed){
+                shiftPressed = true;
+            } else if(name.equals("Shift") && !keyPressed){
+                shiftPressed = false;
             } 
         }
     };
@@ -119,7 +127,6 @@ public class KeysSelect extends AbstractAppState {
                     stateManager.getState(Engine.class).decreaseStep();
                 else
                     stateManager.getState(Engine.class).onExtrudeOctantRequest();
-                
             } else if (name.equals("WheelDown")) {
                 if(ctrlPressed)
                     stateManager.getState(Engine.class).increaseStep();
