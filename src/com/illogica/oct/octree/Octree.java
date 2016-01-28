@@ -8,12 +8,11 @@ package com.illogica.oct.octree;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
- *
+ * The Octree class works like a container for the root node of the tree and has
+ * all the methods needed to modify the tree.
  * @author Loris
  */
 public class Octree implements OctreeEditor{
@@ -44,29 +43,27 @@ public class Octree implements OctreeEditor{
     public static final int SIDE_LEFT = 3; //left face
     public static final int SIDE_TOP = 4; //top face
     public static final int SIDE_BOTTOM = 5; //bottom face
-    
+
     //The characteristics of an octree
     private Octant root;
-    private byte unitDepth; //at what depth the octant size equals 1.0f
 
     private static OctreeListener listener;
     private static int currentMaterial = MATERIAL_RANDOM_COLOR;
-    
-    public Octant getRoot(){return root;}
 
-    public byte getUnitDepth() { return this.unitDepth; }
-    public void setUnitDepth(byte unitDepth) { this.unitDepth = unitDepth; }
-    
+    public Octant getRoot() {
+        return root;
+    }
+
     /**
-     * Return an orphan fictitious Octant to be used as a pointer.
-     * This is the octant that is shown as a selector object
+     * Return an orphan fictitious Octant to be used as a pointer. This is the
+     * octant that is shown as a selector object
+     *
      * @param position
      * @param depth
-     * @return 
+     * @return
      */
-    
-    public Octinfo getSelectionOctinfo(Vector3f position, byte depth){
-        if(!isPositionValid(position)){
+    public Octinfo getSelectionOctinfo(Vector3f position, byte depth) {
+        if (!isPositionValid(position)) {
             System.out.println("Invalid position in Octree.getSelectionOctant()");
             return null;
         }
@@ -89,29 +86,31 @@ public class Octree implements OctreeEditor{
                 case TYPE_8: origin.addLocal(-halfSize, -halfSize, halfSize); break;
             }
         }
-        
+
         //we return a fictitious Octant, we just use it as a container for
         //the origin coordinates and the side length.
         return new Octinfo(origin, size, depth);
     }
-    
+   
     /**
-     * Locate an existing octant in the octree or null if the octant do not exist
+     * Locate an existing octant in the octree or null if the octant do not
+     * exist
+     *
      * @param position
      * @param depth
-     * @return 
+     * @return
      */
-    public Octant getOctant(Vector3f position, byte depth){
-        if(!isPositionValid(position)){
+    public Octant getOctant(Vector3f position, byte depth) {
+        if (!isPositionValid(position)) {
             System.out.println("Invalid position in Octree.getOctant()");
             return null;
         }
-        
+
         Octant currentOctant = getRoot();
-        
+
         for (int i = 0; i < depth; i++) {
-            if(currentOctant.hasChildren()){
-                int type = getOctantTypeForPoint(currentOctant.getOrigin(), position);    
+            if (currentOctant.hasChildren()) {
+                int type = getOctantTypeForPoint(currentOctant.getOrigin(), position);
                 currentOctant = currentOctant.getChildren()[type - 1];
             } else {
                 return null;
@@ -119,55 +118,27 @@ public class Octree implements OctreeEditor{
         }
         return currentOctant;
     }
-   
-    private void removeOctantChildren(Octant o){
-        List<Octant> octantsToParse = new ArrayList<Octant>();
-        List<Octant> octantsToDelete = new ArrayList<Octant>();
-        
-        //child are appended at the end of the list
-        octantsToParse.addAll(Arrays.asList(o.getChildren()));
-        
-        //collect all the children of our octant
-        do{
-            //Get the element on top of the list to keep depth order.
-            //This is needed because we'll call delete on the deepest octants firts
-            Octant child = octantsToParse.remove(0); 
-            if(child.hasChildren())
-                octantsToParse.addAll(Arrays.asList(child.getChildren()));
-            octantsToDelete.add(child);
-        }while(!octantsToParse.isEmpty());
-        
-        //now notify deletion of the children, starting from the deepest
-        // maybe next sort is useless...
-        Collections.sort(octantsToDelete); //ascending order, deepest octants at the end
-        while(!octantsToDelete.isEmpty()){
-            Octant tbd = octantsToDelete.remove(octantsToDelete.size()-1);
-            if(tbd.getMaterialType() != MATERIAL_AIR){
-                System.out.println("Deleted cube!");
-                tbd.setMaterialType(MATERIAL_AIR);    
-            }
-        }
-        
-        //Ok, now that the scenegraph has been cleaned, get rid of the references
-        o.resetChildren();
-    }
-    
+
     /**
      * Check if a point is inside the boundaries of the root cube
+     *
      * @param position the point to check
      * @return true if the point is in a valid position (inside the root cube)
      */
-    private boolean isPositionValid(Vector3f position){
-        float edgeDiv2 = root.getEdgeSize()/2f;
-        if(FastMath.abs(position.x) > (root.getOrigin().x + edgeDiv2))
+    private boolean isPositionValid(Vector3f position) {
+        float edgeDiv2 = root.getEdgeSize() / 2f;
+        if (FastMath.abs(position.x) > (root.getOrigin().x + edgeDiv2)) {
             return false;
-        if(FastMath.abs(position.y) > (root.getOrigin().y + edgeDiv2))
+        }
+        if (FastMath.abs(position.y) > (root.getOrigin().y + edgeDiv2)) {
             return false;
-        if(FastMath.abs(position.z) > (root.getOrigin().z + edgeDiv2))
+        }
+        if (FastMath.abs(position.z) > (root.getOrigin().z + edgeDiv2)) {
             return false;
+        }
         return true;
     }
-    
+
     /**
      * Check to which octant a point belongs
      * @param origin the local origin
@@ -292,7 +263,6 @@ public class Octree implements OctreeEditor{
     
     public static Octree createSimpleTree(OctreeListener listener, byte size){
         Octree tree = new Octree();
-        tree.setUnitDepth(size);
         
         //First of all, register the listener
         Octree.listener = listener;
@@ -340,11 +310,21 @@ public class Octree implements OctreeEditor{
         return root;
     }
 
+    /**
+     * Delete an octant from the tree
+     * @param o the octant to be deleted
+     * @return the deleted octant
+     */
     @Override
     public Octant deleteOctant(Octant o) {
         return o.delete();
     }
 
+    /**
+     * Creates an octant in the specified position.
+     * @param o the information about the octant to be generated
+     * @return the octant generated
+     */
     @Override
     public Octant createOctant(Octinfo o) {
         
@@ -362,8 +342,6 @@ public class Octree implements OctreeEditor{
             
             //get the octant type relative to the root origin
             byte octantType = getOctantTypeForPoint(currentOctant.getOrigin(), o.origin());
-            System.out.println("Origin: " + currentOctant.getOrigin() + ", position: " + o.origin());
-            System.out.println("octant to be generated is type " + octantType);
             currentOctant = currentOctant.getChildren()[octantType - (byte)1];
         }
         

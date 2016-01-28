@@ -36,7 +36,7 @@ public class QuadV4 extends Mesh {
     public QuadV4(){
     }
 
-    public QuadV4(Vector3f v0, Vector3f v1, Vector3f v2, Vector3f v3, Octant o, int side, int unitDepth){
+    public QuadV4(Vector3f v0, Vector3f v1, Vector3f v2, Vector3f v3, Octant o, int side){
         updateGeometry(v0, v1, v2, v3, o, side);
     }
     

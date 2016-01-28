@@ -21,6 +21,7 @@ public class Main extends SimpleApplication {
         
         //APP SETTINGS
         AppSettings settings = new AppSettings(true);
+        settings.setSettingsDialogImage("");
         settings.setTitle("Cooptree");
         settings.setResolution(1366, 768);
         settings.setSamples(8);

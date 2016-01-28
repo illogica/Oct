@@ -19,7 +19,6 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -40,7 +39,7 @@ public class Renderer extends AbstractAppState implements OctreeListener{
     private Octree octree;
     private Node octantsScenegraphRoot;
     private Node selectionObjectScenegraphRoot;
-    Arrow arrow;
+    Arrow arrow; //TODO: MOVE ARROW TO THE SELECTION CONTROL
     Geometry arrowGeometry;
     
     @Override
@@ -78,7 +77,7 @@ public class Renderer extends AbstractAppState implements OctreeListener{
                 return; 
             case Octree.MATERIAL_RANDOM_COLOR:
                 //Material newMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
-                Spatial s = new Qube2(o, stateManager.getState(Materials.class).getDebugMaterial(), octree.getUnitDepth());//GeometryGenerators.getRandomColorCube(o);
+                Spatial s = new Qube2(o, stateManager.getState(Materials.class).getDebugMaterial());//GeometryGenerators.getRandomColorCube(o);
                 //((Qube2)s).scaleTextureCoordinates(FastMath.pow(2f, octree.getUnitDepth() - o.getDepth()));
                 s.setName("Qube" + o.getId());
                 s.setUserData("Octant", o);

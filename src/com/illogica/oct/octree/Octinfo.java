@@ -9,6 +9,8 @@ import com.jme3.math.Vector3f;
 
 /**
  * Lightweight data structure containing atomic spatial data about an Octant.
+ * They encapsulate only the origin, depth and size of the node and are used
+ * to exchange node data.
  * @author Loris
  */
 public class Octinfo {
