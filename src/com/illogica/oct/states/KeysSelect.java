@@ -35,12 +35,15 @@ public class KeysSelect extends AbstractAppState {
         "Subdivide",
         "Increase step",
         "Decrease step",
-        "MouseSelect"
+        "MouseSelect",
+        "Ctrl"
     };
 
     private SimpleApplication app;
     private AppStateManager stateManager;
     boolean dragToRotate = false;
+    
+    boolean ctrlPressed = false;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -67,6 +70,8 @@ public class KeysSelect extends AbstractAppState {
         this.app.getInputManager().addMapping("Subdivide", new KeyTrigger(KeyInput.KEY_1));
         this.app.getInputManager().addMapping("Increase step", new KeyTrigger(KeyInput.KEY_PGUP));
         this.app.getInputManager().addMapping("Decrease step", new KeyTrigger(KeyInput.KEY_PGDN));
+        this.app.getInputManager().addMapping("Ctrl", new KeyTrigger(KeyInput.KEY_LCONTROL));
+        this.app.getInputManager().addMapping("Ctrl", new KeyTrigger(KeyInput.KEY_RCONTROL));
         
         this.app.getInputManager().addListener(actionListener, keyboardMappings);
         this.app.getInputManager().addListener(analogListener, mouseMappings);
@@ -98,7 +103,11 @@ public class KeysSelect extends AbstractAppState {
                 stateManager.getState(Engine.class).decreaseStep();
             } else if(name.equals("MouseSelect") && keyPressed){
                 stateManager.getState(Engine.class).onMouseSelect();
-            }
+            } else if(name.equals("Ctrl") && keyPressed){
+                ctrlPressed = true;
+            } else if(name.equals("Ctrl") && !keyPressed){
+                ctrlPressed = false;
+            } 
         }
     };
     
@@ -106,9 +115,16 @@ public class KeysSelect extends AbstractAppState {
         @Override
         public void onAnalog(String name, float value, float tpf) {
             if (name.equals("WheelExtrude")) {
-                stateManager.getState(Engine.class).onExtrudeOctantRequest();
+                if(ctrlPressed)
+                    stateManager.getState(Engine.class).decreaseStep();
+                else
+                    stateManager.getState(Engine.class).onExtrudeOctantRequest();
+                
             } else if (name.equals("WheelDelete")) {
-                stateManager.getState(Engine.class).onDeleteOctantRequest();
+                if(ctrlPressed)
+                    stateManager.getState(Engine.class).increaseStep();
+                else
+                    stateManager.getState(Engine.class).onDeleteOctantRequest();
             } else if(name.equals("MouseMove")){
                 stateManager.getState(Engine.class).onRefreshSelection();
             }
