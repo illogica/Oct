@@ -55,14 +55,17 @@ public class Octree implements OctreeEditor{
     }
 
     /**
-     * Return an orphan fictitious Octant to be used as a pointer. This is the
-     * octant that is shown as a selector object
+     * Return an Octinfo to be used as a pointer. This is the
+     * octant that is shown as a selector object.
+     * The main difference between with the getOctant() method is that there
+     * might not be and Octant in the requested position, but there will always
+     * be an Octinfo.
      *
      * @param position
      * @param depth
      * @return
      */
-    public Octinfo getSelectionOctinfo(Vector3f position, byte depth) {
+    public Octinfo getOctinfo(Vector3f position, byte depth) {
         if (!isPositionValid(position)) {
             System.out.println("Invalid position in Octree.getSelectionOctant()");
             return null;

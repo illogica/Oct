@@ -121,16 +121,21 @@ public class Renderer extends AbstractAppState implements OctreeListener{
         }
     }
 
-    
+    /**
+     * Given a CollisionResult object, calculates the Octinfo related to the
+     * collision.
+     * @param collisionResult
+     * @return 
+     */
     public Octinfo getSelectionOctinfo(CollisionResult collisionResult) {
         if(octree==null)
             return null;
         //calculate a point on the octant just inside its bounds
         Vector3f collisionPoint = new Vector3f(collisionResult.getContactPoint());
         Vector3f collisionNormal = new Vector3f(collisionResult.getContactNormal());
-        collisionNormal.negateLocal().multLocal(0.001f); //floats are reliable up to the 6th digit
+        collisionNormal.negateLocal().multLocal(Engine.SELECT_PRECISION); //floats are reliable up to the 6th digit
         collisionPoint.addLocal(collisionNormal);
-        return octree.getSelectionOctinfo(collisionPoint, stateManager.getState(SelectionManager.class).getStep());
+        return octree.getOctinfo(collisionPoint, stateManager.getState(SelectionManager.class).getStep());
     }
     
     public void refreshSelection(){
@@ -139,11 +144,11 @@ public class Renderer extends AbstractAppState implements OctreeListener{
             //See what object we have under the cursor
             CollisionResults results = new CollisionResults();
             Ray ray = new Ray(app.getCamera().getLocation(), app.getCamera().getDirection());
-            //Collide only with displayed Octants
+            
             octantsScenegraphRoot.collideWith(ray, results);
             if(results.size()>0){
                 Octinfo oi = getSelectionOctinfo(results.getClosestCollision());
-                stateManager.getState(SelectionManager.class).setObject(results.getClosestCollision(), oi);
+                stateManager.getState(SelectionManager.class).updateSelection(results.getClosestCollision(), oi);
                 
                 if(arrow!= null){
                     Vector3f contactNormal = new Vector3f(results.getClosestCollision().getContactNormal());
@@ -157,6 +162,4 @@ public class Renderer extends AbstractAppState implements OctreeListener{
             }
         }
     }
-
-
 }

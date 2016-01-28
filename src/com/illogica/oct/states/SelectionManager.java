@@ -32,16 +32,13 @@ public class SelectionManager extends AbstractAppState {
     private SimpleApplication app;
     private AppStateManager stateManager;
 
-    private Geometry oldGeometryUnderCursor;
     private Geometry geometryUnderCursor;
 
     private Node selectionNode;
     private SelectionControl selectionControl;
-    private Node quad; //the white outline for faces
 
     private CollisionResult lastCollisionResult;
     private Octinfo lastSelectionOctinfo;
-    private Vector3f lastNormal;
 
 
     @Override
@@ -52,10 +49,8 @@ public class SelectionManager extends AbstractAppState {
         this.app = (SimpleApplication)app;
         this.stateManager = stateManager;
         
-        oldGeometryUnderCursor = new Geometry("dummy geometry");
         geometryUnderCursor = new Geometry("dummy geometry");
         lastSelectionOctinfo = new Octinfo();
-        lastNormal = new Vector3f(0f, 0f, 0f);
 
         this.selectionNode = new Node("Selection");
         this.selectionNode.attachChild(GeometryGenerators.wireFrameQuad());
@@ -70,17 +65,14 @@ public class SelectionManager extends AbstractAppState {
      * @param collisionResult
      * @param oi the fictitious octant where the selection should be
      */
-    public void setObject(CollisionResult collisionResult, Octinfo oi) {
+    public void updateSelection(CollisionResult collisionResult, Octinfo oi) {
         if (collisionResult != null) {
             this.lastCollisionResult = collisionResult;
-
-            this.oldGeometryUnderCursor = geometryUnderCursor;
             this.geometryUnderCursor = collisionResult.getGeometry();
 
             selectionControl.updateData(collisionResult, oi);
 
             lastSelectionOctinfo = oi;
-            lastNormal = lastCollisionResult.getContactNormal();
         }
     }
 
@@ -96,10 +88,6 @@ public class SelectionManager extends AbstractAppState {
         return lastSelectionOctinfo;
     }
 
-    public boolean compareVector3f(Vector3f v1, Vector3f v2) {
-        return ((v1.x == v2.x) && (v1.y == v2.y) && (v1.z == v2.z));
-    }
-
     public byte getStep() {
         return step;
     }
@@ -113,6 +101,7 @@ public class SelectionManager extends AbstractAppState {
 
     public void increaseStep() {
         if (step < MAX_DEPTH) {
+            app.getFlyByCamera().setMoveSpeed(app.getFlyByCamera().getMoveSpeed()/2f);
             this.step++;
         }
         System.out.println("New step: " + step);
@@ -120,6 +109,7 @@ public class SelectionManager extends AbstractAppState {
 
     public void DecreaseStep() {
         if (step > (byte) 0) {
+            app.getFlyByCamera().setMoveSpeed(app.getFlyByCamera().getMoveSpeed()*2f);
             this.step--;
         }
         System.out.println("New step: " + step);
