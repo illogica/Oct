@@ -22,6 +22,8 @@ import com.jme3.scene.Geometry;
  * @author Loris
  */
 public class Engine extends AbstractAppState {
+    
+    public static final float SELECT_PRECISION = 0.0001f;
 
     private SimpleApplication app;
     private AppStateManager sm;
@@ -51,7 +53,8 @@ public class Engine extends AbstractAppState {
         o.subdivide();
     }
 
-    public void onDeleteOctantRequest() {
+    //To be deleted
+    public void onDeleteOctantRequestOld() {
 
         Octinfo selInfo = sm.getState(SelectionManager.class).getLastSelectionOctinfo();
         Octant octant = octree.getOctant(selInfo);
@@ -82,11 +85,24 @@ public class Engine extends AbstractAppState {
 
                 //get the octant type relative to the root origin
                 byte octantType = getOctantTypeForPoint(octant.getOrigin(), o.origin());
-                System.out.println("Origin: " + octant.getOrigin() + ", position: " + o.origin());
-                System.out.println("octant to be generated is type " + octantType);
+                //System.out.println("Origin: " + octant.getOrigin() + ", position: " + o.origin());
+                //System.out.println("octant to be generated is type " + octantType);
                 octant = octant.getChildren()[octantType - (byte) 1];
             }
         }
+        octree.deleteOctant(octant);
+        onRefreshSelection();
+    }
+
+    public void onDeleteOctantRequest() {
+        Octinfo selInfo = sm.getState(SelectionManager.class).getLastSelectionOctinfo();
+        Octant octant = octree.getOctant(selInfo);
+
+        //If the Octant is small and does not exist yet, we create its tree
+        if (octant == null) {
+            octant = octree.createOctant(selInfo);
+        }
+        
         octree.deleteOctant(octant);
         onRefreshSelection();
     }
@@ -102,17 +118,13 @@ public class Engine extends AbstractAppState {
     }
 
     public void onExtrudeOctantRequest() {
+
         CollisionResult cs = sm.getState(SelectionManager.class).getLatestCollisionResult();
-        //Octant o = selectionManager.getObjectUnderCursor().getUserData("Octant");
         Octinfo oi = sm.getState(SelectionManager.class).getLastSelectionOctinfo();
-        //Vector3f position = o.getOrigin().add(cs.getContactNormal().mult(o.getEdgeSize()));
         Vector3f position = oi.origin().add(cs.getContactNormal().mult(oi.size));
-
         Octinfo o = new Octinfo(position, oi.size, oi.depth);
-
         octree.createOctant(o);
 
-        //createOctant(o);
         onRefreshSelection();
     }
 
@@ -122,14 +134,19 @@ public class Engine extends AbstractAppState {
 
     public void onMouseSelect() {
         Geometry g = sm.getState(SelectionManager.class).getObjectUnderCursor();
-        Octant o = g.getParent().getUserData("Octant");
-        System.out.println("Selected octant: " + o);
-        System.out.println("Selected geometry: " + g.getName());
-        System.out.println("Front neighbor is " + o.getNeighbor(0));
-        System.out.println("Right neighbor is " + o.getNeighbor(1));
-        System.out.println("Back neighbor is " + o.getNeighbor(2));
-        System.out.println("Left neighbor is " + o.getNeighbor(3));
-        System.out.println("Top neighbor is " + o.getNeighbor(4));
-        System.out.println("Bottom neighbor is " + o.getNeighbor(5));
+        
+        Octinfo selection = sm.getState(SelectionManager.class).getLastSelectionOctinfo();
+        Octant o = octree.getOctant(selection);
+        if( o != null ) {
+            System.out.println("Selected octant: " + o);
+            System.out.println("Front neighbor is " + o.getNeighbor(0));
+            System.out.println("Right neighbor is " + o.getNeighbor(1));
+            System.out.println("Back neighbor is " + o.getNeighbor(2));
+            System.out.println("Left neighbor is " + o.getNeighbor(3));
+            System.out.println("Top neighbor is " + o.getNeighbor(4));
+            System.out.println("Bottom neighbor is " + o.getNeighbor(5));
+        } else {
+            System.out.println("Selected nothing.");
+        }
     }
 }
