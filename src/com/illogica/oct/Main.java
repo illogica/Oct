@@ -2,9 +2,7 @@ package com.illogica.oct;
 
 import com.illogica.oct.engine.GeometryGenerators;
 import com.illogica.oct.states.LocalScreen;
-import com.jme3.app.BasicProfilerState;
 import com.jme3.app.SimpleApplication;
-import com.jme3.app.StatsAppState;
 import com.jme3.font.BitmapText;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
