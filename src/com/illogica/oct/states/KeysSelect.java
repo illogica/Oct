@@ -25,8 +25,8 @@ import com.jme3.input.controls.MouseButtonTrigger;
 public class KeysSelect extends AbstractAppState {
     
     private final static String[] mouseMappings = new String[]{
-        "WheelExtrude",
-        "WheelDelete",
+        "WheelUp",
+        "WheelDown",
         "MouseMove"
     };
     
@@ -56,8 +56,8 @@ public class KeysSelect extends AbstractAppState {
         this.app.getInputManager().deleteMapping(CameraInput.FLYCAM_ZOOMOUT);
         this.app.getInputManager().deleteMapping(SimpleApplication.INPUT_MAPPING_EXIT);
 
-        this.app.getInputManager().addMapping("WheelExtrude", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
-        this.app.getInputManager().addMapping("WheelDelete", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
+        this.app.getInputManager().addMapping("WheelUp", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
+        this.app.getInputManager().addMapping("WheelDown", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
         
         this.app.getInputManager().addMapping("MouseMove", new MouseAxisTrigger(MouseInput.AXIS_X, true));
         this.app.getInputManager().addMapping("MouseMove", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
@@ -114,13 +114,13 @@ public class KeysSelect extends AbstractAppState {
     private final AnalogListener analogListener = new AnalogListener() {
         @Override
         public void onAnalog(String name, float value, float tpf) {
-            if (name.equals("WheelExtrude")) {
+            if (name.equals("WheelUp")) {
                 if(ctrlPressed)
                     stateManager.getState(Engine.class).decreaseStep();
                 else
                     stateManager.getState(Engine.class).onExtrudeOctantRequest();
                 
-            } else if (name.equals("WheelDelete")) {
+            } else if (name.equals("WheelDown")) {
                 if(ctrlPressed)
                     stateManager.getState(Engine.class).increaseStep();
                 else
