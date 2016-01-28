@@ -10,19 +10,21 @@ import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 
 /**
- * test
+ * Main class
  *
- * @author normenhansen
+ * @author Loris
  */
 public class Main extends SimpleApplication {
 
     public static void main(String[] args) {
         Main app = new Main();
+        
         //APP SETTINGS
         AppSettings settings = new AppSettings(true);
         settings.setTitle("Cooptree");
         settings.setResolution(1366, 768);
         settings.setSamples(8);
+        
         //last line on this paragraph:
         app.setSettings(settings);
         app.start();
@@ -33,8 +35,6 @@ public class Main extends SimpleApplication {
 
         LocalScreen lss = new LocalScreen();
         stateManager.attach(lss);
-        //stateManager.attach(new BasicProfilerState(true)); 
-        //stateManager.attach(new StatsAppState());
 
         /**
          * Åctivate the Nifty-JME integration:
