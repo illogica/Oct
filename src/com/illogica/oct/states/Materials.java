@@ -27,9 +27,10 @@ public class Materials extends AbstractAppState {
     
     public static final int MATERIAL_STONE_WALL = 100;
     
-    
     private AppStateManager stateManager;
     private SimpleApplication app;
+    
+    private Material materialCurrent; //the current material
     
     private Material matRandomColor;
     private Material matWireFrame;
@@ -78,27 +79,31 @@ public class Materials extends AbstractAppState {
         matStoneWall.setColor("Diffuse",ColorRGBA.White);
         matStoneWall.setColor("Specular",ColorRGBA.White);
         matStoneWall.setFloat("Shininess", 64f);  // [0,128]
+        
+        
+        materialCurrent = matStoneWall;
     }
     
-    public Material getRandomColorMaterial(){ return matRandomColor; }
-    public Material getNormalsMaterial() { return matNormals; }
-    public Material getWireframeMaterial() { return matWireFrame; }
-    public Material getDebugMaterial(){ return matDebug; }
-    public Material getStoneWallMaterial() { return matStoneWall; }
+    public Material getCurrentMaterial(){ return materialCurrent; }
     
     public Material getMaterial(int id){
         switch(id){
             case MATERIAL_AIR:
                 return null;
             case MATERIAL_RANDOM_COLOR:
+                materialCurrent = matRandomColor;
                 return matRandomColor;
             case MATERIAL_WIREFRAME:
+                materialCurrent = matWireFrame;
                 return matWireFrame;
             case MATERIAL_NORMALS:
+                materialCurrent = matNormals;
                 return matNormals;
             case MATERIAL_DEBUG:
+                materialCurrent = matDebug;
                 return matDebug;
             case MATERIAL_STONE_WALL:
+                materialCurrent = matStoneWall;
                 return matStoneWall;
         }
         return matDebug;

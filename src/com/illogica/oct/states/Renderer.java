@@ -84,7 +84,7 @@ public class Renderer extends AbstractAppState implements OctreeListener{
             //do nothing, we don't show air
         } else {
             System.out.println("GENERATED: Material " + mat);
-            Spatial s = new Qube2(o, stateManager.getState(Materials.class).getDebugMaterial());// getMaterial(mat));
+            Spatial s = new Qube2(o, stateManager.getState(Materials.class).getCurrentMaterial());
             s.setName("Qube" + o.getId());
             s.setUserData("Octant", o);
             
@@ -94,7 +94,7 @@ public class Renderer extends AbstractAppState implements OctreeListener{
                 octantsScenegraphRoot.attachChild(materialRoot);
             }
             batchNodes.get(mat).attachChild(s);
-            //octantsScenegraphRoot.attachChild(s);
+            batchNodes.get(mat).batch();
         }
     }
 
@@ -105,42 +105,27 @@ public class Renderer extends AbstractAppState implements OctreeListener{
     
     @Override
     public void onOctantMaterialChanged(Octant o) {
-        int mat = o.getMaterialType();
         
-        Spatial s =  octantsScenegraphRoot.getChild("Qube" + o.getId());
-        //Spatial s = batchNodes.get(mat).getChild("Qube" + o.getId());
-        
-        if(s==null){
-            //System.out.println("Cube" + o.getId() + " not found in scenegraph, generating...");
-            onOctantGenerated(o);
-            return; 
-        }
-        if(mat ==  Materials.MATERIAL_AIR){
-            System.out.println("CHANGED: to material AIR");
+        //find the node among the BatchNodes
+        Node toBeEdited = null;
+        for(BatchNode b: batchNodes.values()){
+            toBeEdited = (Node)b.getChild("Qube" + o.getId());
             
-            Node toBeDeleted = null;
-            //look into all BatchNodes:
-            for(BatchNode b : batchNodes.values()){
-                toBeDeleted = (Node)b.getChild("Qube" + o.getId());
-                if(toBeDeleted!= null){
-                    System.out.println("Found!!!! " + toBeDeleted);
-                    break;
+            if(toBeEdited != null){
+                int detachChild = toBeEdited.getParent().detachChild(toBeEdited);
+                    if(detachChild== -1){
+                } else {
+                        
+                    //TODO: this is a huge bottleneck
+                    b.batch();   //with batchnodes, you need to call this at every detach()
                 }
-            }
-            
-            int detachChild = toBeDeleted.getParent().detachChild(toBeDeleted);
-            if(detachChild== -1)
-                System.out.println("DETACH FAILED");
-            
-            int res = octantsScenegraphRoot.detachChild(s); //remove the AIR objects, no need to render them
-            if(res == -1){
-                System.out.println("Not found!" + s.getName());
+                onOctantGenerated(o);
+                return;
             }
         }
-        else { //apply material
-            System.out.println("CHANGED: Material " + mat);
-            
-            ((Qube2)s).setMaterial(stateManager.getState(Materials.class).getDebugMaterial());//getMaterial(mat));
+        
+        if(toBeEdited == null){
+            onOctantGenerated(o);
         }
     }
 
@@ -180,8 +165,6 @@ public class Renderer extends AbstractAppState implements OctreeListener{
                 if(arrowGeometry!=null){
                     arrowGeometry.setLocalTranslation(results.getClosestCollision().getContactPoint());
                 }
-                //System.out.println("Normal: " + results.getClosestCollision().getContactNormal());
-                //System.out.println("Point: " + results.getClosestCollision().getContactPoint());
             }
         }
     }
