@@ -37,7 +37,7 @@ public class GeometryGenerators {
      * @return 
      */
     public static Geometry getRandomColorCube(Octant n) {
-        Box b = new Box(n.getEdgeSize() / 2, n.getEdgeSize() / 2, n.getEdgeSize() / 2);
+        Box b = new Box(n.getEdgeSize() / 1.5f, n.getEdgeSize() / 1.5f, n.getEdgeSize() / 1.5f);
         Geometry geom = new Geometry("Box", b);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         //Material mat = new Material(assetManager, "Common/MatDefs/Misc/ShowNormals.j3md");
@@ -46,6 +46,15 @@ public class GeometryGenerators {
         geom.setName("Cube" + n.getId());
         geom.setUserData("Octant", n);
         geom.setLocalTranslation(n.getOrigin());
+        return geom;
+    }
+    
+    public static Geometry getCubeByOctinfo(Octinfo n, Material mat) {
+        Box b = new Box(n.size / 1.99f, n.size / 1.99f, n.size / 1.99f);
+        Geometry geom = new Geometry("Box", b);
+        geom.setMaterial(mat);
+        geom.setUserData("Octinfo", n);
+        geom.setLocalTranslation(n.origin());
         return geom;
     }
     

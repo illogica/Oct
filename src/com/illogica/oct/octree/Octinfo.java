@@ -5,7 +5,11 @@
  */
 package com.illogica.oct.octree;
 
+import com.jme3.export.JmeExporter;
+import com.jme3.export.JmeImporter;
+import com.jme3.export.Savable;
 import com.jme3.math.Vector3f;
+import java.io.IOException;
 
 /**
  * Lightweight data structure containing atomic spatial data about an Octant.
@@ -13,7 +17,7 @@ import com.jme3.math.Vector3f;
  * to exchange node data.
  * @author Loris
  */
-public class Octinfo {
+public class Octinfo implements Savable{
     public float originX;
     public float originY;
     public float originZ;
@@ -72,5 +76,15 @@ public class Octinfo {
     @Override
     public String toString() {
         return "(" + originX + "," + originY + "," + originZ + "), size:" + size + ", depth:" + depth;
+    }
+
+    @Override
+    public void write(JmeExporter ex) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void read(JmeImporter im) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

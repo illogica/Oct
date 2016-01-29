@@ -6,6 +6,8 @@
 package com.illogica.oct.states;
 
 import com.illogica.oct.engine.GeometryGenerators;
+import com.illogica.oct.engine.QuadV4;
+import com.illogica.oct.engine.Qube2;
 import com.illogica.oct.engine.SelectionControl;
 import com.illogica.oct.octree.Octinfo;
 import com.jme3.app.Application;
@@ -13,9 +15,9 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResult;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import java.util.List;
 
 /**
  * Selection Geometry is the geometry used to decorate an existing object in
@@ -25,20 +27,23 @@ import com.jme3.scene.Node;
  * @author Loris
  */
 public class SelectionManager extends AbstractAppState {
-    public static final int MAX_DEPTH = 16; //maximum allowed octree and drawing step depth
+    public static final int MAX_DEPTH = 14; //maximum allowed octree and drawing step depth
     
     private byte step = 1; // equals to depth, but with a slightly different meaning
     
     private SimpleApplication app;
-    private AppStateManager stateManager;
+    private AppStateManager sm;
 
     private Geometry geometryUnderCursor;
 
     private Node selectionNode;
+    private Node selectionBoxes; //the selection boxes to attach to the scenegraph
     private SelectionControl selectionControl;
 
     private CollisionResult lastCollisionResult;
     private Octinfo lastSelectionOctinfo;
+    
+    //private List<Octinfo> selectionBoxesOi; // a list of Octinfo representing the selection boxes
 
 
     @Override
@@ -47,16 +52,21 @@ public class SelectionManager extends AbstractAppState {
         System.out.println("Initialize SelectionManagerAppState");
 
         this.app = (SimpleApplication)app;
-        this.stateManager = stateManager;
+        this.sm = stateManager;
         
         geometryUnderCursor = new Geometry("dummy geometry");
         lastSelectionOctinfo = new Octinfo();
 
-        this.selectionNode = new Node("Selection");
+        //init the selection node
+        this.selectionNode = new Node("Selection cursor");
         this.selectionNode.attachChild(GeometryGenerators.wireFrameQuad());
         this.selectionControl = new SelectionControl();
         this.selectionNode.addControl(selectionControl);
         this.app.getRootNode().attachChild(selectionNode);
+        
+        //init the selection boxes node
+        this.selectionBoxes = new Node("Selection boxes");
+        this.app.getRootNode().attachChild(selectionBoxes);
     }
 
     /**
@@ -87,7 +97,15 @@ public class SelectionManager extends AbstractAppState {
     public Octinfo getLastSelectionOctinfo() {
         return lastSelectionOctinfo;
     }
-
+    
+    public void selectionBoxesClear(){
+        selectionBoxes.detachAllChildren();
+    }
+    
+    public void selectionBoxesAdd(Octinfo oi){
+        selectionBoxes.attachChild(GeometryGenerators.getCubeByOctinfo(oi, sm.getState(Materials.class).getSelectionBoxMaterial()));
+    }
+    
     public byte getStep() {
         return step;
     }
@@ -99,7 +117,7 @@ public class SelectionManager extends AbstractAppState {
         System.out.println("New step size: " + step);
     }
 
-    public void increaseStep() {
+    public void stepIncrease() {
         if (step < MAX_DEPTH) {
             app.getFlyByCamera().setMoveSpeed(app.getFlyByCamera().getMoveSpeed()/2f);
             this.step++;
@@ -107,7 +125,7 @@ public class SelectionManager extends AbstractAppState {
         System.out.println("New step: " + step);
     }
 
-    public void DecreaseStep() {
+    public void stepDecrease() {
         if (step > (byte) 0) {
             app.getFlyByCamera().setMoveSpeed(app.getFlyByCamera().getMoveSpeed()*2f);
             this.step--;

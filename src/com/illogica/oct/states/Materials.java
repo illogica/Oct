@@ -19,20 +19,20 @@ import com.jme3.texture.Texture;
  * @author Loris
  */
 public class Materials extends AbstractAppState {
-    
+
     // INVISIBLE MATERIAL     0
     public static final int MAT_AIR = 0; //default
-    
+
     // USEFUL MATERIALS       1-10
     public static final int MAT_RANDOM_COLOR = 1;
     public static final int MAT_WIREFRAME = 2;
     public static final int MAT_NORMALS = 3;
     public static final int MAT_DEBUG = 4;
-    
+
     //TRANSPARENT COLORS      10   
     // use http://wiki.jmonkeyengine.org/doku.php/jme3:advanced:materials_overview for reference
     public static final int MAT_TRANSPARENT_GREEN = 10;
-    
+
     //SOLID COLORS            100
     public static final int MAT_SOLID_BLACK = 100;
     public static final int MAT_SOLID_WHITE = 101;
@@ -48,21 +48,22 @@ public class Materials extends AbstractAppState {
     public static final int MAT_SOLID_ORANGE = 111;
     public static final int MAT_SOLID_BROWN = 112;
     public static final int MAT_SOLID_PINK = 113;
-    
+
     //STONE TEXTURES          200    
     public static final int MATERIAL_STONE_WALL = 200;
-    
+
     private AppStateManager stateManager;
     private SimpleApplication app;
-    
+
     private Material materialCurrent; //the current material
-    
+
+    //Debug colors
     private Material matRandomColor;
     private Material matWireFrame;
     private Material matNormals;
     private Material matDebug;
-    private Material matTransparentGreen;
-    
+
+    //Solid colors
     private Material matSolidBlack;
     private Material matSolidWhite;
     private Material matSolidDarkGray;
@@ -77,37 +78,41 @@ public class Materials extends AbstractAppState {
     private Material matSolidOrange;
     private Material matSolidBrown;
     private Material matSolidPink;
-    
+
+    //Transparent colors
+    private Material matTransparentGreen;
+
+    //Textures
     private Material matStoneWall;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.stateManager = stateManager;
-        this.app = (SimpleApplication)app;
-        
+        this.app = (SimpleApplication) app;
+
         //Random color
         matRandomColor = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         matRandomColor.setColor("Color", ColorRGBA.randomColor());
-        
+
         //Wireframe
         matWireFrame = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         matWireFrame.setColor("Color", ColorRGBA.Yellow);
         matWireFrame.getAdditionalRenderState().setWireframe(true);
-        
+
         //Material showing normals
         matNormals = new Material(app.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
-        
+
         //A material with a debug texture
         matDebug = new Material(app.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
         Texture debugTex = app.getAssetManager().loadTexture("Textures/Materials/debug/debug_tex_1024.png");
         debugTex.setWrap(Texture.WrapMode.Repeat);
         matDebug.setTexture("DiffuseMap", debugTex);
-        matDebug.setBoolean("UseMaterialColors",true);
-        matDebug.setColor("Diffuse",ColorRGBA.White);
-        matDebug.setColor("Specular",ColorRGBA.White);
+        matDebug.setBoolean("UseMaterialColors", true);
+        matDebug.setColor("Diffuse", ColorRGBA.White);
+        matDebug.setColor("Specular", ColorRGBA.White);
         matDebug.setFloat("Shininess", 64f);  // [0,128]
-        
+
         //Solid colors
         matSolidBlack = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         matSolidBlack.setColor("Color", ColorRGBA.Black);
@@ -151,18 +156,16 @@ public class Materials extends AbstractAppState {
         matSolidPink = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         matSolidPink.setColor("Color", ColorRGBA.Pink);
         matSolidPink.setName("Solid pink");
-        
+
         //Transparent green 
         matTransparentGreen = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        matTransparentGreen.setColor("Color", new ColorRGBA(0f, 0.8f, 0f, 0.1f));
+        matTransparentGreen.setColor("Color", new ColorRGBA(0f, 0.8f, 0f, 0.5f));
         matTransparentGreen.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         matTransparentGreen.getAdditionalRenderState().setDepthWrite(true);
         matTransparentGreen.getAdditionalRenderState().setAlphaTest(true);
         matTransparentGreen.getAdditionalRenderState().setAlphaFallOff(0.5f);
         matTransparentGreen.setName("Transparent Green");
-        
-        
-        
+
         //Stone wall material
         matStoneWall = new Material(app.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
         Texture stoneWallDiffuseTex = app.getAssetManager().loadTexture("Textures/Materials/stone-wall/stone-wall.jpg");
@@ -170,20 +173,25 @@ public class Materials extends AbstractAppState {
         stoneWallDiffuseTex.setWrap(Texture.WrapMode.Repeat);
         stoneWallNormTex.setWrap(Texture.WrapMode.Repeat);
         matStoneWall.setTexture("DiffuseMap", stoneWallDiffuseTex);
-        matStoneWall.setTexture("NormalMap",stoneWallNormTex);
-        matStoneWall.setBoolean("UseMaterialColors",true);    
-        matStoneWall.setColor("Diffuse",ColorRGBA.White);
-        matStoneWall.setColor("Specular",ColorRGBA.White);
+        matStoneWall.setTexture("NormalMap", stoneWallNormTex);
+        matStoneWall.setBoolean("UseMaterialColors", true);
+        matStoneWall.setColor("Diffuse", ColorRGBA.White);
+        matStoneWall.setColor("Specular", ColorRGBA.White);
         matStoneWall.setFloat("Shininess", 64f);  // [0,128]
-        
-        
-        materialCurrent = matTransparentGreen;
+
+        materialCurrent = matDebug;
     }
     
-    public Material getCurrentMaterial(){ return materialCurrent; }
-    
-    public Material getMaterial(int id){
-        switch(id){
+    public Material getSelectionBoxMaterial(){
+        return matTransparentGreen;
+    }
+
+    public Material getCurrentMaterial() {
+        return materialCurrent;
+    }
+
+    public Material getMaterial(int id) {
+        switch (id) {
             case MAT_AIR:
                 return null;
             case MAT_RANDOM_COLOR:
@@ -240,7 +248,7 @@ public class Materials extends AbstractAppState {
             case MAT_SOLID_PINK:
                 materialCurrent = matSolidPink;
                 break;
-                
+
             case MAT_TRANSPARENT_GREEN:
                 materialCurrent = matTransparentGreen;
                 break;

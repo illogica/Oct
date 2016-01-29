@@ -53,47 +53,6 @@ public class Engine extends AbstractAppState {
         o.subdivide();
     }
 
-    //To be deleted
-    public void onDeleteOctantRequestOld() {
-
-        Octinfo selInfo = sm.getState(SelectionManager.class).getLastSelectionOctinfo();
-        Octant octant = octree.getOctant(selInfo);
-        
-        if (octant == null) {
-            System.out.println("Engine.java 60: octant is null, using selection under cursor");
-            octant = sm.getState(SelectionManager.class).getObjectUnderCursor().getParent().getUserData("Octant");
-            //return;
-        }
-        
-        if (octant == null){
-            System.out.println("Engine.java 66: octant is definitely null, exiting.");
-            return;
-        }
-
-        //if the octant we want to delete is a smaller portion of a bigger one
-        //we need to subdivide the bigger one into smaller ones
-        if (octant.getDepth() < sm.getState(SelectionManager.class).getStep()) {
-            //CollisionResult cs = sm.getState(SelectionManager.class).getLatestCollisionResult();
-            Vector3f position = selInfo.origin();//.subtract(cs.getContactNormal().mult(selInfo.size));
-            Octinfo o = new Octinfo(position, selInfo.size, selInfo.depth);
-
-            while (octant.getDepth() < selInfo.depth) {
-                //subdivide the current octant if not already divided
-                if (!octant.hasChildren()) {
-                    octant.subdivide();
-                }
-
-                //get the octant type relative to the root origin
-                byte octantType = getOctantTypeForPoint(octant.getOrigin(), o.origin());
-                //System.out.println("Origin: " + octant.getOrigin() + ", position: " + o.origin());
-                //System.out.println("octant to be generated is type " + octantType);
-                octant = octant.getChildren()[octantType - (byte) 1];
-            }
-        }
-        octree.deleteOctant(octant);
-        onRefreshSelection();
-    }
-
     public void onDeleteOctantRequest() {
         Octinfo selInfo = sm.getState(SelectionManager.class).getLastSelectionOctinfo();
         Octant octant = octree.getOctant(selInfo);
@@ -108,12 +67,12 @@ public class Engine extends AbstractAppState {
     }
 
     public void increaseStep() {
-        sm.getState(SelectionManager.class).increaseStep();
+        sm.getState(SelectionManager.class).stepIncrease();
         onRefreshSelection();
     }
 
     public void decreaseStep() {
-        sm.getState(SelectionManager.class).DecreaseStep();
+        sm.getState(SelectionManager.class).stepDecrease();
         onRefreshSelection();
     }
 
@@ -136,6 +95,9 @@ public class Engine extends AbstractAppState {
         Geometry g = sm.getState(SelectionManager.class).getObjectUnderCursor();
         
         Octinfo selection = sm.getState(SelectionManager.class).getLastSelectionOctinfo();
+        
+        sm.getState(SelectionManager.class).selectionBoxesAdd(selection);
+        
         Octant o = octree.getOctant(selection);
         if( o != null ) {
             System.out.println("Selected octant: " + o);
