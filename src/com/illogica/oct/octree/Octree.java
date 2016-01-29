@@ -5,6 +5,7 @@
  */
 package com.illogica.oct.octree;
 
+import com.illogica.oct.states.Materials;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import java.util.ArrayList;
@@ -16,9 +17,6 @@ import java.util.List;
  * @author Loris
  */
 public class Octree implements OctreeEditor{
-    
-    public static final int MATERIAL_AIR = 0; //default
-    public static final int MATERIAL_RANDOM_COLOR = 1;
     
     public static final byte TYPE_ROOT = 0; //root node
     public static final byte TYPE_1 = 1; //front up right
@@ -48,7 +46,7 @@ public class Octree implements OctreeEditor{
     private Octant root;
 
     private static OctreeListener listener;
-    private static int currentMaterial = MATERIAL_RANDOM_COLOR;
+    private static int currentMaterial = Materials.MATERIAL_RANDOM_COLOR;
 
     public Octant getRoot() {
         return root;
@@ -209,14 +207,14 @@ public class Octree implements OctreeEditor{
         tree.generateRoot(1f, Vector3f.ZERO);
         tree.getRoot().subdivide();
         Octant children[] = tree.getRoot().getChildren();
-        children[0].setMaterialType(MATERIAL_AIR);
-        children[1].setMaterialType(MATERIAL_AIR);
-        children[2].setMaterialType(MATERIAL_AIR);
-        children[3].setMaterialType(MATERIAL_AIR);
-        children[4].setMaterialType(MATERIAL_RANDOM_COLOR);
-        children[5].setMaterialType(MATERIAL_RANDOM_COLOR);
-        children[6].setMaterialType(MATERIAL_RANDOM_COLOR);
-        children[7].setMaterialType(MATERIAL_RANDOM_COLOR);
+        children[0].setMaterialType(Materials.MATERIAL_AIR);
+        children[1].setMaterialType(Materials.MATERIAL_AIR);
+        children[2].setMaterialType(Materials.MATERIAL_AIR);
+        children[3].setMaterialType(Materials.MATERIAL_AIR);
+        children[4].setMaterialType(Materials.MATERIAL_RANDOM_COLOR);
+        children[5].setMaterialType(Materials.MATERIAL_RANDOM_COLOR);
+        children[6].setMaterialType(Materials.MATERIAL_RANDOM_COLOR);
+        children[7].setMaterialType(Materials.MATERIAL_RANDOM_COLOR);
         
         return tree;
     }
@@ -258,7 +256,7 @@ public class Octree implements OctreeEditor{
         }
         
         for(Octant t: childrenToSubdivide){
-            t.setMaterialType(MATERIAL_RANDOM_COLOR);
+            t.setMaterialType(Materials.MATERIAL_RANDOM_COLOR);
         }
        
         return tree;
@@ -273,7 +271,7 @@ public class Octree implements OctreeEditor{
         
         //Now generate the geometry:
         tree.generateRoot(FastMath.pow(2f, size) , Vector3f.ZERO)
-                .setMaterialType(MATERIAL_RANDOM_COLOR);
+                .setMaterialType(Materials.MATERIAL_RANDOM_COLOR);
                 //.subdivide();
         
         return tree;

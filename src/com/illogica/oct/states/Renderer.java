@@ -18,13 +18,17 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.BatchNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.Arrow;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Takes an Octree and a SimpleApplication and attaches the visible Octree cubes
@@ -42,6 +46,8 @@ public class Renderer extends AbstractAppState implements OctreeListener{
     Arrow arrow; //TODO: MOVE ARROW TO THE SELECTION CONTROL
     Geometry arrowGeometry;
     
+    Map<Integer,BatchNode> batchNodes; //one batch for each material
+    
     @Override
     public void setOctree(Octree tree){
         this.octree = tree;
@@ -57,6 +63,8 @@ public class Renderer extends AbstractAppState implements OctreeListener{
         selectionObjectScenegraphRoot = new Node("selection object root node");
         this.app.getRootNode().attachChild(octantsScenegraphRoot);
         this.app.getRootNode().attachChild(selectionObjectScenegraphRoot);
+        this.batchNodes = new HashMap<Integer, BatchNode>();
+        
         arrow = new Arrow(Vector3f.UNIT_X);
         arrowGeometry = GeometryGenerators.putShape(arrow, ColorRGBA.Green);
         this.app.getRootNode().attachChild(arrowGeometry);
@@ -71,21 +79,22 @@ public class Renderer extends AbstractAppState implements OctreeListener{
     @Override
     public void onOctantGenerated(Octant o) {
         int mat = o.getMaterialType();
-        switch(mat){
-            case Octree.MATERIAL_AIR:
-                //we don't show air
-                return; 
-            case Octree.MATERIAL_RANDOM_COLOR:
-                //Material newMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
-                Spatial s = new Qube2(o, stateManager.getState(Materials.class).getDebugMaterial());//GeometryGenerators.getRandomColorCube(o);
-                //((Qube2)s).scaleTextureCoordinates(FastMath.pow(2f, octree.getUnitDepth() - o.getDepth()));
-                s.setName("Qube" + o.getId());
-                s.setUserData("Octant", o);
-                /*int length = */octantsScenegraphRoot.attachChild(s);
-                //GeometryBatchFactory.optimize(octantsScenegraphRoot);
-                break;
-            default: 
-                throw new MaterialUndefinedException("Unknown material: " + mat);
+        if(mat == Materials.MATERIAL_AIR){
+            System.out.println("GENERATED: Material air, do nothing");
+            //do nothing, we don't show air
+        } else {
+            System.out.println("GENERATED: Material " + mat);
+            Spatial s = new Qube2(o, stateManager.getState(Materials.class).getDebugMaterial());// getMaterial(mat));
+            s.setName("Qube" + o.getId());
+            s.setUserData("Octant", o);
+            
+            if(!batchNodes.containsKey(mat)){
+                BatchNode materialRoot = new BatchNode("Mat" + mat);
+                batchNodes.put(mat, materialRoot);
+                octantsScenegraphRoot.attachChild(materialRoot);
+            }
+            batchNodes.get(mat).attachChild(s);
+            //octantsScenegraphRoot.attachChild(s);
         }
     }
 
@@ -96,28 +105,42 @@ public class Renderer extends AbstractAppState implements OctreeListener{
     
     @Override
     public void onOctantMaterialChanged(Octant o) {
-        Spatial s = octantsScenegraphRoot.getChild("Qube" + o.getId());
+        int mat = o.getMaterialType();
+        
+        Spatial s =  octantsScenegraphRoot.getChild("Qube" + o.getId());
+        //Spatial s = batchNodes.get(mat).getChild("Qube" + o.getId());
+        
         if(s==null){
             //System.out.println("Cube" + o.getId() + " not found in scenegraph, generating...");
             onOctantGenerated(o);
             return; 
         }
-        int mat = o.getMaterialType();
-        switch(mat){
-            case Octree.MATERIAL_AIR:
-                octantsScenegraphRoot.detachChild(s); //remove the AIR objects, no need to render them
-                //System.out.println("Detached Cube" + o.getId());
-                return; 
-            case Octree.MATERIAL_RANDOM_COLOR:
-                //Material newMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-                //newMat.setColor("Color", ColorRGBA.randomColor());
-                //Material newMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
-                ((Qube2)s).setMaterial(stateManager.getState(Materials.class).getDebugMaterial());
-                //((Qube2)s).scaleTextureCoordinates( 1f / o.getDepth());
-                //GeometryBatchFactory.optimize(octantsScenegraphRoot);
-                break;
-            default: 
-                throw new MaterialUndefinedException("Unknown material: " + mat);
+        if(mat ==  Materials.MATERIAL_AIR){
+            System.out.println("CHANGED: to material AIR");
+            
+            Node toBeDeleted = null;
+            //look into all BatchNodes:
+            for(BatchNode b : batchNodes.values()){
+                toBeDeleted = (Node)b.getChild("Qube" + o.getId());
+                if(toBeDeleted!= null){
+                    System.out.println("Found!!!! " + toBeDeleted);
+                    break;
+                }
+            }
+            
+            int detachChild = toBeDeleted.getParent().detachChild(toBeDeleted);
+            if(detachChild== -1)
+                System.out.println("DETACH FAILED");
+            
+            int res = octantsScenegraphRoot.detachChild(s); //remove the AIR objects, no need to render them
+            if(res == -1){
+                System.out.println("Not found!" + s.getName());
+            }
+        }
+        else { //apply material
+            System.out.println("CHANGED: Material " + mat);
+            
+            ((Qube2)s).setMaterial(stateManager.getState(Materials.class).getDebugMaterial());//getMaterial(mat));
         }
     }
 

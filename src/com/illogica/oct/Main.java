@@ -6,6 +6,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.font.BitmapText;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
+import com.jme3.scene.shape.Sphere;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 
@@ -50,7 +51,7 @@ public class Main extends SimpleApplication {
         initCrossHairs();
         cam.setFrustumPerspective(45f, (float) cam.getWidth() / cam.getHeight(), 0.01f, 1000f);
         GeometryGenerators.initialize(assetManager);
-        
+        Sphere sp;
     }
 
     @Override

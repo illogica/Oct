@@ -6,6 +6,7 @@
 package com.illogica.oct.octree;
 
 import static com.illogica.oct.octree.Octree.*;
+import com.illogica.oct.states.Materials;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -94,7 +95,7 @@ public class Octant implements Savable, Comparable {
         if (parent != null) {
             this.materialType = parent.materialType;// inherit material of the parent
         } else {
-            this.materialType = Octree.MATERIAL_AIR; //material for the root octant
+            this.materialType = Materials.MATERIAL_AIR; //material for the root octant
         }
         System.out.println("Created node with id " + id);
     }
@@ -257,7 +258,7 @@ public class Octant implements Savable, Comparable {
         if (Octree.getListener() != null) {
             Octree.getListener().onOctantDeleted(this); //remove from the scenegraph
         }
-        this.setMaterialType(MATERIAL_AIR);
+        this.setMaterialType(Materials.MATERIAL_AIR);
         return this;
     }
 
@@ -291,7 +292,7 @@ public class Octant implements Savable, Comparable {
         children[6] = createOctant(this, edgeSize / 2, origin.add(new Vector3f(-size, -size, -size)), (byte) (depth + 1), Octree.TYPE_7);
         children[7] = createOctant(this, edgeSize / 2, origin.add(new Vector3f(-size, -size, size)), (byte) (depth + 1), Octree.TYPE_8);
 
-        this.setMaterialType(Octree.MATERIAL_AIR); //hide "this", the parent cube
+        this.setMaterialType(Materials.MATERIAL_AIR); //hide "this", the parent cube
         return this;
     }
 

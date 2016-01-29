@@ -18,15 +18,25 @@ import com.jme3.texture.Texture;
  * @author Loris
  */
 public class Materials extends AbstractAppState {
+    
+    public static final int MATERIAL_AIR = 0; //default
+    public static final int MATERIAL_RANDOM_COLOR = 1;
+    public static final int MATERIAL_WIREFRAME = 2;
+    public static final int MATERIAL_NORMALS = 3;
+    public static final int MATERIAL_DEBUG = 4;
+    
+    public static final int MATERIAL_STONE_WALL = 100;
+    
+    
     private AppStateManager stateManager;
     private SimpleApplication app;
     
-    private Material randomColorMat;
-    private Material wireFrameMat;
-    private Material normalsMat;
-    private Material debugMat;
+    private Material matRandomColor;
+    private Material matWireFrame;
+    private Material matNormals;
+    private Material matDebug;
     
-    private Material stoneWallMat;
+    private Material matStoneWall;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -35,44 +45,62 @@ public class Materials extends AbstractAppState {
         this.app = (SimpleApplication)app;
         
         //Random color
-        randomColorMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        randomColorMat.setColor("Color", ColorRGBA.randomColor());
+        matRandomColor = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        matRandomColor.setColor("Color", ColorRGBA.randomColor());
         
         //Wireframe
-        wireFrameMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        wireFrameMat.setColor("Color", ColorRGBA.Yellow);
-        wireFrameMat.getAdditionalRenderState().setWireframe(true);
+        matWireFrame = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        matWireFrame.setColor("Color", ColorRGBA.Yellow);
+        matWireFrame.getAdditionalRenderState().setWireframe(true);
         
         //Material showing normals
-        normalsMat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
+        matNormals = new Material(app.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
         
         //A material with a debug texture
-        debugMat = new Material(app.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
+        matDebug = new Material(app.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
         Texture debugTex = app.getAssetManager().loadTexture("Textures/Materials/debug/debug_tex_1024.png");
         debugTex.setWrap(Texture.WrapMode.Repeat);
-        debugMat.setTexture("DiffuseMap", debugTex);
-        debugMat.setBoolean("UseMaterialColors",true);
-        debugMat.setColor("Diffuse",ColorRGBA.White);
-        debugMat.setColor("Specular",ColorRGBA.White);
-        debugMat.setFloat("Shininess", 64f);  // [0,128]
+        matDebug.setTexture("DiffuseMap", debugTex);
+        matDebug.setBoolean("UseMaterialColors",true);
+        matDebug.setColor("Diffuse",ColorRGBA.White);
+        matDebug.setColor("Specular",ColorRGBA.White);
+        matDebug.setFloat("Shininess", 64f);  // [0,128]
         
         //Stone wall material
-        stoneWallMat = new Material(app.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
+        matStoneWall = new Material(app.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
         Texture stoneWallDiffuseTex = app.getAssetManager().loadTexture("Textures/Materials/stone-wall/stone-wall.jpg");
         Texture stoneWallNormTex = app.getAssetManager().loadTexture("Textures/Materials/stone-wall/stone-wall-norm.png");
         stoneWallDiffuseTex.setWrap(Texture.WrapMode.Repeat);
         stoneWallNormTex.setWrap(Texture.WrapMode.Repeat);
-        stoneWallMat.setTexture("DiffuseMap", stoneWallDiffuseTex);
-        stoneWallMat.setTexture("NormalMap",stoneWallNormTex);
-        stoneWallMat.setBoolean("UseMaterialColors",true);    
-        stoneWallMat.setColor("Diffuse",ColorRGBA.White);
-        stoneWallMat.setColor("Specular",ColorRGBA.White);
-        stoneWallMat.setFloat("Shininess", 64f);  // [0,128]
+        matStoneWall.setTexture("DiffuseMap", stoneWallDiffuseTex);
+        matStoneWall.setTexture("NormalMap",stoneWallNormTex);
+        matStoneWall.setBoolean("UseMaterialColors",true);    
+        matStoneWall.setColor("Diffuse",ColorRGBA.White);
+        matStoneWall.setColor("Specular",ColorRGBA.White);
+        matStoneWall.setFloat("Shininess", 64f);  // [0,128]
     }
     
-    public Material getRandomColorMaterial(){ return randomColorMat; }
-    public Material getNormalsMaterial() { return normalsMat; }
-    public Material getWireframeMaterial() { return wireFrameMat; }
-    public Material getDebugMaterial(){ return debugMat; }
-    public Material getStoneWallMaterial() { return stoneWallMat; }
+    public Material getRandomColorMaterial(){ return matRandomColor; }
+    public Material getNormalsMaterial() { return matNormals; }
+    public Material getWireframeMaterial() { return matWireFrame; }
+    public Material getDebugMaterial(){ return matDebug; }
+    public Material getStoneWallMaterial() { return matStoneWall; }
+    
+    public Material getMaterial(int id){
+        switch(id){
+            case MATERIAL_AIR:
+                return null;
+            case MATERIAL_RANDOM_COLOR:
+                return matRandomColor;
+            case MATERIAL_WIREFRAME:
+                return matWireFrame;
+            case MATERIAL_NORMALS:
+                return matNormals;
+            case MATERIAL_DEBUG:
+                return matDebug;
+            case MATERIAL_STONE_WALL:
+                return matStoneWall;
+        }
+        return matDebug;
+    }
 }
