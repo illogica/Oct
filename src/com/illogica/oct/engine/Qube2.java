@@ -9,6 +9,7 @@ import com.illogica.oct.octree.Octant;
 import com.jme3.material.Material;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
@@ -35,6 +36,8 @@ public class Qube2 extends Node {
     public void updateMaterial(Material material) {
         for (int i = 0; i < 6; i++) {
             geom[i].setMaterial(material);
+            if(material.getName().startsWith("Transparent"))
+                geom[i].setQueueBucket(Bucket.Transparent);
         }
     }
 

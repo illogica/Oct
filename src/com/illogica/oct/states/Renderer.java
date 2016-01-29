@@ -79,7 +79,7 @@ public class Renderer extends AbstractAppState implements OctreeListener{
     @Override
     public void onOctantGenerated(Octant o) {
         int mat = o.getMaterialType();
-        if(mat == Materials.MATERIAL_AIR){
+        if(mat == Materials.MAT_AIR){
             System.out.println("GENERATED: Material air, do nothing");
             //do nothing, we don't show air
         } else {
