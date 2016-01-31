@@ -48,7 +48,7 @@ public class Main extends SimpleApplication {
         nifty.fromXml("Interface/LocalScreen.xml", "start", lss);
         //nifty.setDebugOptionPanelColors(true);        
 
-        initCrossHairs();
+        //initCrossHairs();
         cam.setFrustumPerspective(45f, (float) cam.getWidth() / cam.getHeight(), 0.01f, 1000f);
         GeometryGenerators.initialize(assetManager);
         Sphere sp;

@@ -40,6 +40,7 @@ public class LocalScreen extends AbstractAppState implements ScreenController{
     private Renderer rendererAppState;
     private Materials materials;
     private Lighting lighting;
+    private Hud hud;
     
     
     @Override
@@ -73,6 +74,7 @@ public class LocalScreen extends AbstractAppState implements ScreenController{
         engineAppState = new Engine();
         keysSelectAppstate = new KeysSelect();
         rendererAppState= new Renderer();
+        hud = new Hud();
         
         //rootNode.attachChild(GeometryGenerators.quadBasedCube(null));
         /*Octant o = new Octant(null, 2.0f, Vector3f.ZERO, (byte)1, (byte)1);
@@ -85,6 +87,7 @@ public class LocalScreen extends AbstractAppState implements ScreenController{
         this.app.getStateManager().attach(keysSelectAppstate);
         this.app.getStateManager().attach(rendererAppState);
         this.app.getStateManager().attach(engineAppState);
+        this.app.getStateManager().attach(hud);
         //stateManager.attach(new VideoRecorderAppState()); //start recording
         
     }

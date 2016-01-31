@@ -6,8 +6,6 @@
 package com.illogica.oct.states;
 
 import com.illogica.oct.engine.GeometryGenerators;
-import com.illogica.oct.engine.QuadV4;
-import com.illogica.oct.engine.Qube2;
 import com.illogica.oct.engine.SelectionControl;
 import com.illogica.oct.octree.Octinfo;
 import com.jme3.app.Application;
@@ -17,7 +15,6 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import java.util.List;
 
 /**
  * Selection Geometry is the geometry used to decorate an existing object in
@@ -103,7 +100,8 @@ public class SelectionManager extends AbstractAppState {
     }
     
     public void selectionBoxesAdd(Octinfo oi){
-        selectionBoxes.attachChild(GeometryGenerators.getCubeByOctinfo(oi, sm.getState(Materials.class).getSelectionBoxMaterial()));
+        if(selectionBoxes.getChild(oi.toString()) == null)
+            selectionBoxes.attachChild(GeometryGenerators.getCubeByOctinfo(oi, sm.getState(Materials.class).getSelectionBoxMaterial()));
     }
     
     public byte getStep() {

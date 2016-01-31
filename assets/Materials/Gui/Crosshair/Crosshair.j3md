@@ -1,0 +1,18 @@
+MaterialDef Crosshair {
+    MaterialParameters {
+        Texture2D Texture
+    }
+
+    Technique {
+        VertexShader GLSL100:   Materials/Gui/Crosshair/Crosshair.vert
+        FragmentShader GLSL100: Materials/Gui/Crosshair/Crosshair.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+
+        Defines {
+            TEXTURE: Texture
+        }
+    }
+}

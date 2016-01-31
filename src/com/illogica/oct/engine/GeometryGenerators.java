@@ -53,6 +53,7 @@ public class GeometryGenerators {
         Box b = new Box(n.size / 1.99f, n.size / 1.99f, n.size / 1.99f);
         Geometry geom = new Geometry("Box", b);
         geom.setMaterial(mat);
+        geom.setName(n.toString());
         geom.setUserData("Octinfo", n);
         geom.setLocalTranslation(n.origin());
         return geom;

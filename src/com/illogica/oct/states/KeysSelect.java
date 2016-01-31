@@ -86,6 +86,14 @@ public class KeysSelect extends AbstractAppState {
         super.stateAttached(stateManager);
 
     }
+    
+    public boolean isCtrlPressed(){
+        return ctrlPressed;
+    }
+    
+    public boolean isShiftPressed(){
+        return shiftPressed;
+    }
 
     private final ActionListener actionListener = new ActionListener() {
         @Override
