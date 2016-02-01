@@ -2,14 +2,15 @@
 <nifty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://nifty-gui.lessvoid.com/nifty-gui" xsi:schemaLocation="https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd">
     <useControls filename="nifty-default-controls.xml"/>
     <useStyles filename="nifty-default-styles.xml"/>
-    <screen id="start" controller="com.illogica.oct.states.LocalScreen">
+    <screen id="start" controller="com.illogica.oct.states.Hud">
         <layer id="background" childLayout="center"/>
         <layer id="foreground" childLayout="vertical">
             
-            <panel id="panel_top" childLayout="horizontal" align="center" height="10%">
-                <control id="console" name="nifty-console" lines="5" align="left" valign="top" focusable="true"/>
+            <panel id="panel_top" childLayout="horizontal" align="center" height="5%">
+                <control id="console" name="nifty-console" lines="2" align="left" valign="top" focusable="true"/>
             </panel>
-            <panel id="panel_bottom" childLayout="center" align="center" height="75%"/>
+            <panel id="panel_bottom" childLayout="center" align="center" height="75%">
+            </panel>
         </layer>
     </screen>
 </nifty>

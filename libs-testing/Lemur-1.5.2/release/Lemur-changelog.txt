@@ -1,0 +1,258 @@
+
+Lemur ???
+----------
+* Added @Documented annotation to StyleAttribute so that it shows up in the
+    javadoc. (oops)
+* Fixed bug in Panel where insets were not applied during setInsets() if
+    an InsetsComponent had been previously set (or insets were set a second
+    time).
+* Fixed a bug with up/down event processing in Button.  It was possible to
+    receive up events when no down event was received.  Now every down gets
+    an up and there are no ups without downs.
+* Added an additional constructor to Container that takes a layout and elementId.
+* Added a simplified SpringGridLayout constructor that just takes the axes for
+    axis ordering.
+* Modified DefaultMouseListener to have more configurable click detection.
+    A click threshold can be specified on the constructor instead of being hard-coded
+    to three.  Also, the click detection is done with an easily overridable method.
+* Fixed IconComponent to allow setting the alpha value even if a color has not been
+    set.  Color defaults to white in that case.
+
+
+Lemur v1.5.1
+-------------
+* Fixed an error message in SpringGridLayout to refer to itself properly.
+* Modified GuiGlobals to have a protected getAssetManager() field.
+* Fixed a bug in PickEventSession when using non-Viewport root pick roots.
+* Added setters/getters for MouseAppState's includeDefaultNodes field that
+    controls if pick roots are automatically added during initialize.
+* Fixed Slider to not add the drag handler to the slider range.  It was a
+    leftover from when drag events weren't delivered to the capture properly
+    and now left the strange behavior of dragging in the slider range causing
+    the button to move.
+* Added Axis.getDirection() to return one of the constant Vector3f.UNIT_X,
+    UNIT_Y, or UNIT_Z depending on the axis value.
+* Added Slider.getValueForLocation() which can be used to calculate where
+    in the model's range a particular local coordinate represents.  Useful
+    for a variety of range-related listener behavior.
+* Updated GuiControl.setPreferredSize() to throw an illegal argument exception
+    if the specified size is negative.
+* Fixed GuiControl.setSize() to not mutate the passed in size.
+* GuiControl.setSize() passes the original size to GuiControl listeners instead
+    of the child-mutated size.
+* Fixed a small sizing issue in BorderLayout where it was always passing
+    through 0 for the z size when setting the size of children.  Now it passes
+    through the size that was passed to reshape.
+* Added Button.removeClickCommands()
+* Added Container.clearChildren()
+* Modified PickEventSession to keep its pick roots in a SafeArrayList for
+    garbage-free iteration.
+* Added setAlpha()/getAlpha() to ColoredComponent and modified all ColoredComponent
+    implementors to have the new methods.
+* Added Panel.setAlpha() and Panel.getAlpha() for setting the alpha of just 
+    the panel and it's components or of all children recursively.  Useful
+    for fading in/out entire UI hierarchies.
+* Fixed a bug in DefaultRangedValueModel where changes to min and max value weren't
+    incrementing the version.        
+* Added some more trace level logging to the Styles class to help users debug
+    style issues.
+* Added styling attributes for Panel.alpha and Panel.preferredSize
+* Added vec3() and vec2() functions to the style API
+* Fixed GuiControl to clamp the passed size to min 0,0,0 during reshape.
+* Added a check for negative sizes to GuiControl.setSize().
+* Refactored how named layer ordering is done in GuiControl by creating a separte
+    ComponentStack class that can enforce a total ordering based on named layers.
+    Soooo much simpler.  All of the other GUI elements were modified to use it.
+    The breaking change is for any custom GUI element that relied on the old weird
+    component ordering methods as they are now gone.
+* Added setIcon() to label to set an icon-layer component.  (This was made easy
+    by the above refactoring and is long overdue.)
+* Breaking fix: modified how TextComponent's z offset is used to be more sensible
+    and to properly affect the next layer in the stack.  This directly affects
+    shadowOffset and any styling using shadowOffset probably needs the sign of
+    its z component flipped.  The new default shadow offset is now (1, -1, -1)
+* Added FocusChangeListener and FocusChangeEvent support.  GuiControl now has
+    add/removeFocusChangeListener() methods for registering listeners that will
+    be notified when the control loses or gains focus.
+* Fixed a bug in SpringGridLayout where a minorFill wasn't getting handled 
+    right if major file was set to ForcedEven and minorFill was not.
+* Fixed a bug in CursorEvent deliver if the captured spatial was removed before
+    the up event was received.  The attempt to deliver move events was throwing
+    NPEs.  Now it just returns the current event consumption state instead.
+* Panel now has a "border" property in addition to "background", so all 
+    regular GUI elements can now have separate borders and backgrounds.
+* GuiControl can now be "focusable" even if none of it's child components are
+    by using the setFocusable() method.
+* Added a Slider constructor that takes Axis, ElementId, and style.
+* Gave TbtQuadBackgroundComponent a proper toString() method.
+* Gave SpringGridLayout a proper toString() method.
+* Added some style-less constructors for Label and Container.
+* Modified IconComponent and QuadBackgroundComponent to set AlphaDiscardThreshold
+    instead of just alphaTest since alphaTest is a no-op in JME 3.1.  (Note: this
+    is a breaking change for 3.0 because it's Unshaded.j3md doesn't have an
+    AlphaDiscardThreshold.)
+* Styles.DEFAULT_STYLE changed to Styles.ROOT_STYLE to better reflect what it's
+    for... also the constant was changed from "default" to "root".
+* Styles now supports a user-defined default style that will be used for style
+    application when no other style is defined.  Useful for globally setting
+    a UI's look and feel.
+* Modified some Styles trace logging to include more info.
+* GuiGlobals font loading modified to set AlphaDiscardThreshold in addition to
+    alphaTest since alphaTest is a no-op in JME 3.1.  (Note: this
+    is a breaking change for 3.0 because it's Unshaded.j3md doesn't have an
+    AlphaDiscardThreshold.)
+* Added a TextField constructor that takes just text and element ID.
+* Fixed a syntax error in StyleApi.groovy's vec2() helper function.     
+
+
+Lemur 1466
+-----------
+* InsetsComponent constructor now calls setInsets() instead of setting the
+    field directly.
+* Updated the border.png image.
+* Added icons that can be used for a glass-style checkbox on/off state.
+    (preparing for someday including 'glass' style by default.)
+* Added a GuiControlListener and abstract base implementation (names subject
+    to change) for receiving GuiControl reshape and focus events.
+* Fixed a bug in Slider where the thumb would get invalid positions when
+    the slider was resized after initial display.
+* Added another constructor to Checkbox that takes the string, model,
+    element ID, and style.
+* Added a better error message to the StyleLoader when groovy is not
+    present.
+* Added some trace logging to the Styles class.
+* Added a TabbedPanel GUI element.
+* Added a RollupPanel GUI element.
+* Added a BaseStyles loader for loading built-in styles.
+* Added a built-in "glass" style under resource com/simsilica/lemur/style/base/glass-styles.groovy
+    Projects can define their own file under the same resource path if they
+    want to extend or override parts of the glass style.
+* Fixed an issue in button click handling where the click distance was too
+    sensitive... in fact for buttons there should be no click distance at all
+    as long as you are still over the button.  And that's how it behaves now.                    
+
+
+Lemur r1430
+------------
+* Slider now consumes the MouseMotionEvent if dragging is in progress.  This
+    fixes an issue with the spatial highlighting being turned off if the mouse
+    or touch event slides off the spatial during dragging.
+* Moved FocusTarget and FocusManagerState to a separate 'focus' package.
+* Added isFocused() and isFocusable() to FocusTarget.
+* Modified FocusManagerState to be hierarchy aware when it comes to notifying
+    changes in focus.  This means that parent FocusTargets will also get
+    notified.
+* Fixed DynamicInsetsComponent to overcome a previous limitation where it
+    wouldn't work if the containing GUI element already had its preferred
+    size set.
+* Added a utility method findFocusTarget() to FocusManagerState.  This is
+    a refactoring of a previous protected method.
+* Added a ProgressBar GUI element.            
+    
+
+Lemur r1375
+------------
+* TouchAppState fixed to avoid some minor per-update garbage
+    creation.
+* Refactored how Styles are kept internally.  This fixes some
+    limitations that existed with parent/child selectors.
+* LayerComparator's setLayer() utility methods were modified to
+    treat layer 0 as null so the attribute gets removed.
+* Added layer number support to TextComponent and modified
+    Label to give text components layers that will be less
+    likely to conflict with backgrounds (also text with shadows).
+* Fixed a small event consumption bug in PickEventSession that
+    only affected cases where MouseEventControl and CursorEventControl
+    were used on a spatial together.
+* Fixed the camel-casing on the FillMode enum.  This will break anyone
+    using the old names but enums are hard to fix nicely and I feel
+    it's better to bite the bullet now.
+* Fixed the camel-casing on the HAlignment and VAlignment enums.  This
+    will break anyone using the old names, see above for reasoning.
+* Fixed the camel-casing on the InputState enum.  This will break anyone
+    using the old names, see above for reasoning.
+    Sorry for the trouble.
+
+
+
+Lemur r1327
+------------
+* Updated Panel javadoc to clarify y-inversion in layouts.
+* Added a ConsumingMouseListener implementation that can be
+    used to make GUI elements "opaque" to mouse events.
+* Added TextField.setFont().
+* TextComponent and TextEntryComponent will no longer recreate
+    the BitmapText in setFont() unless the font has actually
+    changed.
+* QuadBackgroundComponent modified to support Textures.
+* Added a HoverMouseListener to better facility fly-over style
+    tool tips.
+* Added the ElementId to the toString() of the core GUI elements.
+* MouseAppState modified to do picking on the collision roots in
+    reverse order so that they better act like layers.
+* Added convenience methods to ElementId to grab a child element
+    ID using the dot-notation preferred by the style system.
+* Added standard get() method to Attributes that looks up the
+    value without doing a default value check (which requires knowing
+    the type).
+* Add the ability to retrieve the command lists from a button.
+* Added a double-gradient.png standard icon for creating 'glass-like'
+    vertical bevels.
+* Added a protected getDragStartLocation() to the default DragHandler
+    implementation so that subclasses can retrieve it if needed.  Useful
+    for implementations that will indicate "rubber-banding" or similar.
+* Added a PickEventSession to handle delivery of cursor-based events
+    to pickable components.  Useful for non-mouse based event handling
+    (ie: joysticks, touch, etc.) or when event locations need to be
+    rempapped during event processing.
+* Changed MouseAppState to use a PickEventSession for its picking and
+    event delivery.
+* Added Cursor-related events, listeners, and a CursorEventControl that
+    works similarly to MouseEventControl but provides information about
+    the collision.
+* Converted Slider and DragHandler to use the new cursor events so that
+    they could better calculate projection.
+* Optimized QuadBackgroundComponent to avoid resizing the quad if its
+    size hasn't changed.
+* Added getChildren() and clearChildren() to GuiLayout and its
+    implementations.
+* Fixed SpringGridLayout.remove() to recalculate the row and column
+    counts.
+* Exposed button states isPressed() and isHighlightOn().
+* Added a method to SpringGridLayout to get the node at a specific
+    row and column.
+* Modified SpringGridLayout to allow null children.  This can be useful
+    for padding out the edges for FillMode.FORCED_EVEN
+* Fixed SpringGridLayout to report the proper preferred size when
+    FillMode.FORCED_EVEN is used for an axis.
+* Updated the javadoc for MouseAppState and PickEventSession
+* Added a TouchAppState for handling touch events similar to
+    how mouse events are handled but supporting multi-touch.
+* GuiGlobals updated to automatically include touch support if
+    detected.  (Currently if touch is detected then the mouse
+    support is disabled.)
+* Updated DragHandler to be a CursorEventListener instead of a
+    MouseEventListener.  This means it can avoid using the deprecated
+    back door methods to getting ViewPort info since it is now part
+    of the cursor event itself.
+* Fixed SpringGridLayout to do better clean-up if replacing an
+    existing node at a specific row, column.
+* Added collection based addCommands() to CommandMap
+* Added a (style IDed) setter to Button for setting the whole
+    command map.
+* Added some ElementId-based getSelector() methods to the Styles API.
+* Redid how the nested elements of a Slider are IDed.  The class constants
+    now refer to the nested part and not the whole ID.  This means that
+    if the user sets their own ElementId for the slider that the children
+    will match.
+    (Breaking change: for style code expecting the old element IDs.)
+* Added an aditional full-parameter constructor to Slider.
+* Fixed DefaultRangedValueModel to reclamp the value if the range changes.
+* QuadBackgroundComponent and TbtQuadBackgroundComponent manage their
+    internal material better and now expose the GuiMaterial to callers.
+* Mouse button events now force a mouse move event just in case the button
+    event comes sooner than the latest pick info.
+* Added a removeListenersFromSpatial() method to MouseEventControl (and
+    CursorEventControl) that acts just like the addListenersToSpatial()
+    in that it will ignore spatials without the MouseEventControl.
+* Perform null checks in addListenersToSpatial() and removeListenersFromSpatial().

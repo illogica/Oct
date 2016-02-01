@@ -1,0 +1,44 @@
+
+Release TBD
+------------
+* Added a standard log binding that scripts can use for logging.
+* Added the basic HUD window support.
+* Added button click hook support and window-managed buttons.
+* Added a selectionHook API
+* Added a SelectionIndicator control that can be attached to any
+    spatial to highlight its Mesh(es) as wire frame.
+* Fixed a bug where default imports weren't being made available
+    to initialization scripts.    
+* Fixed a problem where the file chooser dialog wasn't being 
+    brought to front when invoked from an in-HUD button press.
+* Modified the material param stuff to do its own type checking
+    because JME waits until render time to resolve these and
+    then the app crashes.
+
+
+Release 1279
+-------------
+* fixed a bug that would cause node += child to set node to an int.
+* Added initial "mode" support as a global app state.
+* Added "modeHook" scripting support
+* Added ColorRGBA math add-ons like for the Vector classes.
+* Added camera lookAt convenience functions.  Takes Spatial, Vector3f, or x,y,z
+* Fixed a legacy bug in the console state where binding variables set through 
+    callbacks were getting wiped out.
+* Added a SelectionState to keep track of the selected spatial and provide click-through
+    support.
+* Exposed the selected spatial through a "selected" binding and allow easy script-based
+    selection changing with setSelected()
+* Removed the Node.plus() overload because it works strangely in the case of node += child
+    and doesn't look right as just node + child.  Replaced it with leftShift, ie: node << child
+* Added Node.leftShift to add a child to a node.
+* Added ability to Node to do .each{}, .findAll{}, etc.
+* Added Spatial.flatten() to flatten the spatial into a single collection of itself and all
+    of its children.
+* Added visit(Class) version of the visit method for visiting only nodes of a specific
+    type.  ie: rootNode.visit(Geometry) { println it }
+
+
+Release r1269
+--------------
+* initial upload

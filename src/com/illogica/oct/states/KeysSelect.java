@@ -101,10 +101,10 @@ public class KeysSelect extends AbstractAppState {
             if (name.equals("Console") && !keyPressed) {
                 dragToRotate = !dragToRotate;
                 if (dragToRotate == false) { //focus on 3d world
-                    stateManager.getState(LocalScreen.class).getScreen().getFocusHandler().resetFocusElements();
+                    stateManager.getState(Hud.class).getScreen().getFocusHandler().resetFocusElements();
                 } else {
                     //screen.getFocusHandler().setKeyFocus( niftyConsole);
-                    stateManager.getState(LocalScreen.class).getNiftyConsole().setFocus();
+                    stateManager.getState(Hud.class).getNiftyConsole().getTextField().setFocus();
                 }
                 app.getFlyByCamera().setDragToRotate(dragToRotate);
             } else if(name.equals("Subdivide") && !keyPressed){

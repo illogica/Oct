@@ -4,11 +4,8 @@ import com.illogica.oct.engine.GeometryGenerators;
 import com.illogica.oct.states.LocalScreen;
 import com.jme3.app.SimpleApplication;
 import com.jme3.font.BitmapText;
-import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
-import com.jme3.scene.shape.Sphere;
 import com.jme3.system.AppSettings;
-import de.lessvoid.nifty.Nifty;
 
 /**
  * Main class
@@ -18,6 +15,7 @@ import de.lessvoid.nifty.Nifty;
 public class Main extends SimpleApplication {
 
     public static void main(String[] args) {
+
         Main app = new Main();
         
         //APP SETTINGS
@@ -37,21 +35,10 @@ public class Main extends SimpleApplication {
 
         LocalScreen lss = new LocalScreen();
         stateManager.attach(lss);
-
-        /**
-         * Åctivate the Nifty-JME integration:
-         */
-        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
-                assetManager, inputManager, audioRenderer, guiViewPort);
-        Nifty nifty = niftyDisplay.getNifty();
-        guiViewPort.addProcessor(niftyDisplay);
-        nifty.fromXml("Interface/LocalScreen.xml", "start", lss);
-        //nifty.setDebugOptionPanelColors(true);        
-
+    
         //initCrossHairs();
-        cam.setFrustumPerspective(45f, (float) cam.getWidth() / cam.getHeight(), 0.01f, 1000f);
+
         GeometryGenerators.initialize(assetManager);
-        Sphere sp;
     }
 
     @Override
@@ -65,6 +52,7 @@ public class Main extends SimpleApplication {
 
     /**
      * A centred plus sign to help the player aim.
+     * TODO: Delete this function, it's useless
      */
     protected void initCrossHairs() {
     //BitmapFont _guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");

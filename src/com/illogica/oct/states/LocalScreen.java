@@ -5,33 +5,25 @@
  */
 package com.illogica.oct.states;
 
-import com.illogica.oct.gui.FancyConsole;
 import com.illogica.oct.octree.Octree;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.app.state.VideoRecorderAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
-import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.controls.Console;
-import de.lessvoid.nifty.screen.Screen;
-import de.lessvoid.nifty.screen.ScreenController;
 
 /**
  *
  * @author Loris
  */
-public class LocalScreen extends AbstractAppState implements ScreenController{
+public class LocalScreen extends AbstractAppState{
 
-    private Nifty nifty;
-    private Screen screen;
+
     private SimpleApplication app;
     private Node rootNode;
     private AssetManager assetManager;
-    private Console niftyConsole;
-    private FancyConsole console;
+
     private Octree tree;
     
     private SelectionManager selectionManagerAppState;
@@ -58,15 +50,7 @@ public class LocalScreen extends AbstractAppState implements ScreenController{
         // setup the flyby camera
         this.app.getFlyByCamera().setDragToRotate(false);
         this.app.getFlyByCamera().setMoveSpeed(10f);
-        
-        //get a reference to the console
-        niftyConsole = screen.findNiftyControl("console", Console.class);
-        
-        //Takes focus from Nifty gui
-        screen.getFocusHandler().resetFocusElements();
-        
-        //create the FancyConsole
-        console = new FancyConsole(niftyConsole, nifty, this.app);
+        this.app.getCamera().setFrustumPerspective(45f, (float) this.app.getCamera().getWidth() / this.app.getCamera().getHeight(), 0.001f, 1000f);
 
         lighting = new Lighting();
         materials = new Materials();
@@ -84,39 +68,15 @@ public class LocalScreen extends AbstractAppState implements ScreenController{
         this.app.getStateManager().attach(lighting);
         this.app.getStateManager().attach(materials);
         this.app.getStateManager().attach(selectionManagerAppState);
-        this.app.getStateManager().attach(keysSelectAppstate);
         this.app.getStateManager().attach(rendererAppState);
         this.app.getStateManager().attach(engineAppState);
         this.app.getStateManager().attach(hud);
+        this.app.getStateManager().attach(keysSelectAppstate);
         //stateManager.attach(new VideoRecorderAppState()); //start recording
         
     }
-    
-    public Screen getScreen(){
-        return screen;
-    }
-    
-    public Console getNiftyConsole(){
-        return niftyConsole;
-    }
-    
+
     public SimpleApplication getApp(){
         return this.app;
     }
-
-    @Override
-    public void bind(Nifty nifty, Screen screen) {
-        this.nifty = nifty;
-        this.screen = screen;
-    }
-
-    @Override
-    public void onStartScreen() {
-        
-    }
-
-    @Override
-    public void onEndScreen() {
-    }
-   
 }
