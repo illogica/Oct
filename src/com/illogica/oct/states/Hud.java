@@ -12,6 +12,9 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.light.DirectionalLight;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.scene.Geometry;
 import de.lessvoid.nifty.Nifty;
@@ -38,7 +41,7 @@ public class Hud extends AbstractAppState implements ScreenController{
     private Console niftyConsole; //the gui component
     private FancyConsole console; //our implementation
     
-    List<Geometry> materials;
+    Geometry currentMaterialBox;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -64,11 +67,25 @@ public class Hud extends AbstractAppState implements ScreenController{
         
         
         //TEST
-        float boxHeight = Display.getHeight() / 15f;
-        Geometry box = GeometryGenerators.boxByMat(sm.getState(Materials.class).getMaterial(Materials.MAT_SOLID_CYAN));
-        this.app.getGuiNode().attachChild(box);
-        box.setLocalTranslation( boxHeight - 10f, Display.getHeight() - boxHeight - 10f, 0f);
-        box.setLocalScale(boxHeight);
+        float boxHeight = Display.getHeight() / 10f;
+        currentMaterialBox = GeometryGenerators.boxByMat(sm.getState(Materials.class).getMaterial(Materials.MAT_STONE_WALL));
+        this.app.getGuiNode().attachChild(currentMaterialBox);
+        currentMaterialBox.setLocalTranslation( boxHeight - 10f, Display.getHeight() - boxHeight - 10f, 0f);
+        currentMaterialBox.rotate(0.1f, 0f, 0f);
+        currentMaterialBox.setLocalScale(boxHeight);
+        
+            /** A white, directional light source */ 
+        DirectionalLight sun = new DirectionalLight();
+        sun.setDirection((new Vector3f(0f, -0.5f, -0.5f)).normalizeLocal());
+        sun.setColor(ColorRGBA.White);
+        this.app.getGuiNode().addLight(sun); 
+    }
+
+    @Override
+    public void update(float tpf) {
+        super.update(tpf);
+        currentMaterialBox.rotate(0f, tpf/10f, 0f);
+        
     }
     
     private void loadCrosshairs(){

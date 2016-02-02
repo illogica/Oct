@@ -50,7 +50,7 @@ public class Materials extends AbstractAppState {
     public static final int MAT_SOLID_PINK = 113;
 
     //STONE TEXTURES          200    
-    public static final int MATERIAL_STONE_WALL = 200;
+    public static final int MAT_STONE_WALL = 200;
 
     private AppStateManager stateManager;
     private SimpleApplication app;
@@ -252,7 +252,7 @@ public class Materials extends AbstractAppState {
             case MAT_TRANSPARENT_GREEN:
                 materialCurrent = matTransparentGreen;
                 break;
-            case MATERIAL_STONE_WALL:
+            case MAT_STONE_WALL:
                 materialCurrent = matStoneWall;
                 break;
         }
