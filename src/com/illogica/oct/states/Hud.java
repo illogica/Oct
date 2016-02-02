@@ -5,6 +5,7 @@
  */
 package com.illogica.oct.states;
 
+import com.illogica.oct.engine.GeometryGenerators;
 import com.illogica.oct.gui.CustomPicture;
 import com.illogica.oct.gui.FancyConsole;
 import com.jme3.app.Application;
@@ -12,17 +13,15 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.niftygui.NiftyJmeDisplay;
-import com.simsilica.lemur.Button;
-import com.simsilica.lemur.Command;
-import com.simsilica.lemur.Container;
-import com.simsilica.lemur.GuiGlobals;
-import com.simsilica.lemur.Label;
-import com.simsilica.lemur.style.BaseStyles;
+import com.jme3.scene.Geometry;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Console;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.SizeValue;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.lwjgl.opengl.Display;
 
 /**
@@ -38,6 +37,8 @@ public class Hud extends AbstractAppState implements ScreenController{
     private Screen screen;
     private Console niftyConsole; //the gui component
     private FancyConsole console; //our implementation
+    
+    List<Geometry> materials;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -48,8 +49,8 @@ public class Hud extends AbstractAppState implements ScreenController{
         loadCrosshairs();
         
         //Initialize Nifty Gui
-        
-        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
+        Logger.getLogger("").setLevel(Level.SEVERE); //Nifty is quite chatty, let's shut it
+        NiftyJmeDisplay niftyDisplay = NiftyJmeDisplay.newNiftyJmeDisplay (
                 this.app.getAssetManager(),
                 this.app.getInputManager(),
                 this.app.getAudioRenderer(),
@@ -57,11 +58,17 @@ public class Hud extends AbstractAppState implements ScreenController{
         nifty = niftyDisplay.getNifty();
         this.app.getGuiViewPort().addProcessor(niftyDisplay);
         nifty.fromXml("Interface/LocalScreen.xml", "start", this);
-        //nifty.setDebugOptionPanelColors(true);   
+        
+        //un-focus Nifty gui, bind() must have been already called
+        screen.getFocusHandler().resetFocusElements();
         
         
-        //create the FancyConsole
-        
+        //TEST
+        float boxHeight = Display.getHeight() / 15f;
+        Geometry box = GeometryGenerators.boxByMat(sm.getState(Materials.class).getMaterial(Materials.MAT_SOLID_CYAN));
+        this.app.getGuiNode().attachChild(box);
+        box.setLocalTranslation( boxHeight - 10f, Display.getHeight() - boxHeight - 10f, 0f);
+        box.setLocalScale(boxHeight);
     }
     
     private void loadCrosshairs(){
@@ -79,9 +86,13 @@ public class Hud extends AbstractAppState implements ScreenController{
     public Screen getScreen(){
         return screen;
     }
-        
-    public Console getNiftyConsole(){
-        return niftyConsole;
+
+    public void focusToConsole(){
+        niftyConsole.getTextField().setFocus();
+    }
+    
+    public void unfocusConsole(){
+        screen.getFocusHandler().resetFocusElements();
     }
 
     @Override
@@ -91,8 +102,7 @@ public class Hud extends AbstractAppState implements ScreenController{
         
         //get a reference to the console
         niftyConsole = screen.findNiftyControl("console", Console.class);
-        //Takes focus from Nifty gui
-        screen.getFocusHandler().resetFocusElements();
+        
         console = new FancyConsole(niftyConsole, nifty, this.app);
         niftyConsole.getTextField().setHeight(new SizeValue(10 + "px"));
     }

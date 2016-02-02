@@ -4,8 +4,8 @@ MaterialDef Crosshair {
     }
 
     Technique {
-        VertexShader GLSL100:   Materials/Gui/Crosshair/Crosshair.vert
-        FragmentShader GLSL100: Materials/Gui/Crosshair/Crosshair.frag
+        VertexShader GLSL100:   Shaders/Crosshair/Crosshair.vert
+        FragmentShader GLSL100: Shaders/Crosshair/Crosshair.frag
 
         WorldParameters {
             WorldViewProjectionMatrix

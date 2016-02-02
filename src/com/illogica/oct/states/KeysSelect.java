@@ -42,7 +42,7 @@ public class KeysSelect extends AbstractAppState {
 
     private SimpleApplication app;
     private AppStateManager stateManager;
-    boolean dragToRotate = false;
+    boolean focusOnGui = false;
     
     boolean ctrlPressed = false;
     boolean shiftPressed = false;
@@ -99,21 +99,21 @@ public class KeysSelect extends AbstractAppState {
         @Override
         public void onAction(String name, boolean keyPressed, float tpf) {
             if (name.equals("Console") && !keyPressed) {
-                dragToRotate = !dragToRotate;
-                if (dragToRotate == false) { //focus on 3d world
-                    stateManager.getState(Hud.class).getScreen().getFocusHandler().resetFocusElements();
+                focusOnGui = !focusOnGui;
+                if (focusOnGui == false) { //focus on 3d world
+                    stateManager.getState(Hud.class).unfocusConsole();
                 } else {
-                    //screen.getFocusHandler().setKeyFocus( niftyConsole);
-                    stateManager.getState(Hud.class).getNiftyConsole().getTextField().setFocus();
+                    stateManager.getState(Hud.class).focusToConsole();
                 }
-                app.getFlyByCamera().setDragToRotate(dragToRotate);
+                app.getFlyByCamera().setDragToRotate(focusOnGui);
+                
             } else if(name.equals("Subdivide") && !keyPressed){
                 stateManager.getState(Engine.class).onSubdivideOctantRequest();
             } else if(name.equals("Increase step") && !keyPressed){
                 stateManager.getState(Engine.class).increaseStep();
             } else if(name.equals("Decrease step") && !keyPressed){
                 stateManager.getState(Engine.class).decreaseStep();
-            } else if(name.equals("MouseSelect") && keyPressed){
+            } else if(name.equals("MouseSelect") && keyPressed && !focusOnGui){
                 stateManager.getState(Engine.class).onMouseSelect();
             } else if(name.equals("Ctrl") && keyPressed){
                 ctrlPressed = true;

@@ -123,7 +123,7 @@ public class CustomPicture extends Geometry {
      */
     public void setTexture(AssetManager assetManager, Texture2D tex, boolean useAlpha){
         if (getMaterial() == null){
-            Material mat = new Material(assetManager, "Materials/Gui/Crosshair/Crosshair.j3md");
+            Material mat = new Material(assetManager, "Shaders/Crosshair/Crosshair.j3md");
             //Material mat = new Material(assetManager, "Common/MatDefs/Gui/Gui.j3md");
             //mat.setColor("Color", ColorRGBA.Blue);
             setMaterial(mat);

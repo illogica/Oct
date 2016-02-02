@@ -49,7 +49,7 @@ public class FancyConsole implements Commands {
 
         // finally enable command completion
         consoleCommands.enableCommandCompletion(true);
-        console.output("Hello :) press ESC to switch between console and 3d world");
+        console.output("Hello :) \\#fa0#press ESC to switch between console and 3d world");
     }
 
     public void print(String line) {

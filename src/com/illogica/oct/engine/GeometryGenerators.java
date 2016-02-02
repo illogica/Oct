@@ -108,6 +108,19 @@ public class GeometryGenerators {
     }*/
     
     /**
+     * Generates a unit cube with a given material.
+     * Useful for the Gui
+     * @param mat the material to use
+     * @return 
+     */
+    public static Geometry boxByMat(Material mat){
+        Box b = new Box(0.5f, 0.5f, 0.5f);
+        Geometry geom = new Geometry("Box", b);
+        geom.setMaterial(mat);
+        return geom;
+    }
+    
+    /**
      * Generates a wireframe white cube
      * @param o
      * @return 
