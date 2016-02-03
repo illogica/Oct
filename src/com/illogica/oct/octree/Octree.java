@@ -324,7 +324,6 @@ public class Octree implements OctreeEditor{
     /**
      * Creates an octant in the specified position.
      * @param o the information about the octant to be generated
-     * @param preserveMaterial
      * @return the octant generated
      */
     @Override

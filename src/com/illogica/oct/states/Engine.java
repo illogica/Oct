@@ -8,7 +8,6 @@ package com.illogica.oct.states;
 import com.illogica.oct.octree.Octant;
 import com.illogica.oct.octree.Octinfo;
 import com.illogica.oct.octree.Octree;
-import static com.illogica.oct.octree.Octree.getOctantTypeForPoint;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -37,7 +36,7 @@ public class Engine extends AbstractAppState {
         this.app = (SimpleApplication) app;
         this.sm = stateManager;
         //this.octree = Octree.createTemplateOctree(stateManager.getState(Renderer.class), 0);
-        this.octree = Octree.createSimpleTree(stateManager.getState(Renderer.class), (byte)2);
+        this.octree = Octree.createSimpleTree(stateManager.getState(Renderer.class), (byte)3);
     }
 
     @Override
@@ -63,6 +62,7 @@ public class Engine extends AbstractAppState {
         }
         
         octree.deleteOctant(octant);
+        sm.getState(Renderer.class).batch();
         onRefreshSelection();
     }
 
@@ -83,7 +83,7 @@ public class Engine extends AbstractAppState {
         Vector3f position = oi.origin().add(cs.getContactNormal().mult(oi.size));
         Octinfo o = new Octinfo(position, oi.size, oi.depth);
         octree.createOctant(o);
-
+        //sm.getState(Renderer.class).batch();
         onRefreshSelection();
     }
 

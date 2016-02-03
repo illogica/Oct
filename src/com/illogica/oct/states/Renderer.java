@@ -27,8 +27,13 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.Arrow;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Takes an Octree and a SimpleApplication and attaches the visible Octree cubes
@@ -47,6 +52,7 @@ public class Renderer extends AbstractAppState implements OctreeListener{
     Geometry arrowGeometry;
     
     Map<Integer,BatchNode> batchNodes; //one batch for each material
+    HashSet<BatchNode> toBatch;
     
     @Override
     public void setOctree(Octree tree){
@@ -64,6 +70,7 @@ public class Renderer extends AbstractAppState implements OctreeListener{
         this.app.getRootNode().attachChild(octantsScenegraphRoot);
         this.app.getRootNode().attachChild(selectionObjectScenegraphRoot);
         this.batchNodes = new HashMap<Integer, BatchNode>();
+        this.toBatch = new HashSet<BatchNode>();
         
         arrow = new Arrow(Vector3f.UNIT_X);
         arrowGeometry = GeometryGenerators.putShape(arrow, ColorRGBA.Green);
@@ -80,7 +87,7 @@ public class Renderer extends AbstractAppState implements OctreeListener{
     public void onOctantGenerated(Octant o) {
         int mat = o.getMaterialType();
         if(mat == Materials.MAT_AIR){
-            System.out.println("GENERATED: Material air, do nothing");
+            //System.out.println("GENERATED: Material air, do nothing");
             //do nothing, we don't show air
         } else {
             System.out.println("GENERATED: Material " + mat);
@@ -96,6 +103,17 @@ public class Renderer extends AbstractAppState implements OctreeListener{
             batchNodes.get(mat).attachChild(s);
             batchNodes.get(mat).batch();
         }
+        toBatch.add(batchNodes.get(mat));
+    }
+    
+    public void batch(){
+        
+        for(BatchNode b : toBatch){
+            if(b!=null)
+                b.batch();
+        }
+
+        toBatch.clear();
     }
 
     @Override
@@ -117,7 +135,8 @@ public class Renderer extends AbstractAppState implements OctreeListener{
                 } else {
                         
                     //TODO: this is a huge bottleneck
-                    b.batch();   //with batchnodes, you need to call this at every detach()
+                    toBatch.add(b);
+                    //b.batch();   //with batchnodes, you need to call this at every detach()
                 }
                 onOctantGenerated(o);
                 return;

@@ -42,12 +42,12 @@ public class Qube extends Node{
     }
     
     public void scaleTextureCoordinates(float n){
-        qa.scaleTextureCoordinates(new Vector2f(n,n));
+        /*qa.scaleTextureCoordinates(new Vector2f(n,n));
         qb.scaleTextureCoordinates(new Vector2f(n,n));
         qc.scaleTextureCoordinates(new Vector2f(n,n));
         qd.scaleTextureCoordinates(new Vector2f(n,n));
         qe.scaleTextureCoordinates(new Vector2f(n,n));
-        qf.scaleTextureCoordinates(new Vector2f(n,n));
+        qf.scaleTextureCoordinates(new Vector2f(n,n));*/
     }
     
     private void updateGeometry(Octant o, Material mat){
@@ -73,13 +73,13 @@ public class Qube extends Node{
         qf = new QuadV4(v6, v5, v4, v7);*/
                
         //QuadV4 q = new QuadV4(new Vector3f(1f,1f,0f), new Vector3f(3f,1f,0f), new Vector3f(3f,3f,5f), new Vector3f(1f,3f,5f));
-        geomA = new Geometry("Qa", qa);
+        /*geomA = new Geometry("Qa", qa);
         geomA.setMesh(qe);
         geomB = new Geometry("Qb", qb);
         geomC = new Geometry("Qc", qc);
         geomD = new Geometry("Qd", qd);
         geomE = new Geometry("Qe", qe);
-        geomF = new Geometry("Qf", qf);
+        geomF = new Geometry("Qf", qf);*/
         
         //Material mat = new Material(assetManager, "Common/MatDefs/Misc/ShowNormals.j3md");
         //mat.setColor("Color", ColorRGBA.randomColor());

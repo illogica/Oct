@@ -11,7 +11,12 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.util.TangentBinormalGenerator;
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 /**
  * A Cube made of custom quads
@@ -25,6 +30,8 @@ public class Qube2 extends Node {
     Geometry geom[];
     Octant o;
     Material mat;
+    Mesh m;
+            
 
     public Qube2() {
     }
@@ -33,20 +40,10 @@ public class Qube2 extends Node {
         updateGeometry(o, mat);
     }
 
-    public void updateMaterial(Material material) {
-        for (int i = 0; i < 6; i++) {
-            geom[i].setMaterial(material);
-            if(material.getName().startsWith("Transparent"))
-                geom[i].setQueueBucket(Bucket.Transparent);
-        }
-    }
-
     public void scaleTextureCoordinates(float n) {
         Vector2f scaleVec = new Vector2f(n, n);
-
-        for (int i = 0; i < 6; i++) {
-            quad[i].scaleTextureCoordinates(scaleVec);
-        }
+        
+        m.scaleTextureCoordinates(scaleVec);
     }
 
     private void updateGeometry(Octant o, Material mat) {
@@ -68,13 +65,7 @@ public class Qube2 extends Node {
         v6 = o.getOrigin().add(new Vector3f(-s, -s, -s));
         v7 = o.getOrigin().add(new Vector3f(-s, -s, s));
 
-        for (int i = 0; i < 6; i++) {
-
-            quad[i] = quadBySide(i);
-            geom[i] = new Geometry("Q" + i, quad[i]);
-            geom[i].setMaterial(mat);
-            this.attachChild(geom[i]);
-        }
+        mergeSides();
         //scaleTextureCoordinates(FastMath.pow(2f, Octree.getUnitDepth()));
     }
 
@@ -95,5 +86,45 @@ public class Qube2 extends Node {
             default:
                 throw new IllegalStateException("Wrong side number");
         }
+    }
+    
+    private void mergeSides(){
+        FloatBuffer position = FloatBuffer.allocate(12*6);
+        FloatBuffer tex = FloatBuffer.allocate(8*6);
+        FloatBuffer normal = FloatBuffer.allocate(12*6);
+        ShortBuffer indices = ShortBuffer.allocate(6*6);
+                
+        for (int i = 0; i < 6; i++) {
+            quad[i] = quadBySide(i);
+            //System.out.println(quad[i].getBufferList());
+            position.put(quad[i].positionArray);
+            tex.put(quad[i].texCoordsArray);
+            normal.put(quad[i].normalArray);
+            
+            for(int j=0; j<quad[i].indexArray.length; j++){
+                short val = quad[i].indexArray[j];
+                val += 4*i;
+                indices.put(val);
+            }
+            //geom[i] = new Geometry("Q" + i, quad[i]);
+            //geom[i].setMaterial(mat);
+            //this.attachChild(geom[i]);
+        }
+        
+
+        m = new Mesh();
+        m.setBuffer(VertexBuffer.Type.Position, 3, position);
+        m.setBuffer(VertexBuffer.Type.TexCoord, 2, tex);
+        m.setBuffer(VertexBuffer.Type.Normal, 3, normal);
+        m.setBuffer(VertexBuffer.Type.Index, 3, indices);
+        TangentBinormalGenerator.generate(m);
+        m.updateBound();
+        
+        Geometry g = new Geometry("Qube", m);
+        g.setMaterial(mat);
+        if(mat.getName().startsWith("Transparent")){
+            g.setQueueBucket(Bucket.Transparent);
+        }
+        this.attachChild(g);
     }
 }

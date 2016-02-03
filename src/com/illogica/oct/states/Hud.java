@@ -69,7 +69,7 @@ public class Hud extends AbstractAppState implements ScreenController{
         
         //TEST
         float boxHeight = Display.getHeight() / 5f;
-        currentMaterialBox = GeometryGenerators.boxByMat(sm.getState(Materials.class).getMaterial(Materials.MAT_STONE_WALL));
+        currentMaterialBox = GeometryGenerators.boxByMat(sm.getState(Materials.class).getCurrentMaterial());
         this.app.getGuiNode().attachChild(currentMaterialBox);
         currentMaterialBox.setLocalTranslation( boxHeight - 10f, Display.getHeight() - boxHeight - 10f, 0f);
         currentMaterialBox.rotate(0.1f, 0f, 0f);

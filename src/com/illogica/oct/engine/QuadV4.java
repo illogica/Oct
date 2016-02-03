@@ -9,19 +9,17 @@ import com.illogica.oct.octree.Octant;
 import com.illogica.oct.octree.Octree;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.VertexBuffer;
-import com.jme3.util.TangentBinormalGenerator;
 
 /**
  *
  * @author Loris
  */
-public class QuadV4 extends Mesh {
-    private Vector3f v0;
-    private Vector3f v1;
-    private Vector3f v2;
-    private Vector3f v3;
+public class QuadV4 {
+    
+    public float positionArray[];
+    public float texCoordsArray[];
+    public float normalArray[];
+    public short indexArray[];
     
     private float tileSize;
     private float rootSize;
@@ -45,73 +43,55 @@ public class QuadV4 extends Mesh {
     }
 
     private void updateGeometry(Vector3f v0, Vector3f v1, Vector3f v2, Vector3f v3, Octant o, int side) {
-        this.v0 = v0;
-        this.v1 = v1;
-        this.v2 = v2;
-        this.v3 = v3;
     
         Vector3f n0 = (v1.subtract(v0).cross(v3.subtract(v0))).normalize();
         Vector3f n1 = (v2.subtract(v1).cross(v0.subtract(v1))).normalize();
         Vector3f n2 = (v3.subtract(v2).cross(v1.subtract(v2))).normalize();
         Vector3f n3 = (v0.subtract(v3).cross(v2.subtract(v3))).normalize();
         
-        setBuffer(VertexBuffer.Type.Position, 3, new float[]{
-                  v0.x, v0.y, v0.z
+        positionArray = new float[]{
+            v0.x, v0.y, v0.z
                 , v1.x, v1.y, v1.z
                 , v2.x, v2.y, v2.z
-                , v3.x, v3.y, v3.z });
+                , v3.x, v3.y, v3.z };
         
         //Calculate texture coordinates and scaling for this cube
         tileSize = o.getEdgeSize();
         rootSize = o.getEdgeSize() * FastMath.pow(2f, o.getDepth()); //useless
         calculateShifts(o, side);
         
-        float texCoords[] = null;
-        
         switch(side){
             case Octree.SIDE_FRONT:
             case Octree.SIDE_BACK:
-                texCoords = new float[]{shiftX, shiftY,
+                texCoordsArray = new float[]{shiftX, shiftY,
                                     shiftX + tileSize, shiftY,
                                     shiftX + tileSize, shiftY + tileSize,
                                     shiftX, shiftY + tileSize};
                 break;
             case Octree.SIDE_LEFT:
             case Octree.SIDE_RIGHT:
-                texCoords = new float[]{shiftZ, shiftY,
+                texCoordsArray = new float[]{shiftZ, shiftY,
                                     shiftZ + tileSize, shiftY,
                                     shiftZ + tileSize, shiftY + tileSize,
                                     shiftZ, shiftY + tileSize};
                 break;
             case Octree.SIDE_TOP:
             case Octree.SIDE_BOTTOM:
-                texCoords = new float[]{shiftX, shiftZ,
+                texCoordsArray = new float[]{shiftX, shiftZ,
                                     shiftX + tileSize, shiftZ,
                                     shiftX + tileSize, shiftZ + tileSize,
                                     shiftX, shiftZ + tileSize};
                 break;
         }
-        setBuffer(VertexBuffer.Type.TexCoord, 2, texCoords);
-        
-        
-        setBuffer(VertexBuffer.Type.Normal, 3, new float[]{
+
+        normalArray = new float[]{
                   n0.x, n0.y, n0.z
                 , n1.x, n1.y, n1.z
                 , n2.x, n2.y, n2.z
-                , n3.x, n3.y, n3.z });
+                , n3.x, n3.y, n3.z };
         
-        setBuffer(VertexBuffer.Type.Index, 3, new short[]{0, 1, 2,
-                                                 0, 2, 3});
-        
-        TangentBinormalGenerator.generate(this);
-        
-        /*System.out.print("TYPE:"+ o.getType()+",Side:" + side + ",shiftX:" + shiftX +",shiftY:" + shiftY + ",shiftZ:" + shiftZ + ",tileSize:" + tileSize + ",texCoords:");
-        System.out.print("(" + texCoords[0]+ "," +texCoords[1] + ")");    
-        System.out.print("(" + texCoords[2]+ "," +texCoords[3] + ")");    
-        System.out.print("(" + texCoords[4]+ "," +texCoords[5] + ")");    
-        System.out.print("(" + texCoords[6]+ "," +texCoords[7] + ")");    
-        System.out.println("");*/
-        updateBound();
+        indexArray = new short[]{0, 1, 2,
+                                0, 2, 3};
     }
     
     /**

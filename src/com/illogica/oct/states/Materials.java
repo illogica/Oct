@@ -94,14 +94,17 @@ public class Materials extends AbstractAppState {
         //Random color
         matRandomColor = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         matRandomColor.setColor("Color", ColorRGBA.randomColor());
+        matRandomColor.setName("Random Color");
 
         //Wireframe
         matWireFrame = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         matWireFrame.setColor("Color", ColorRGBA.Yellow);
         matWireFrame.getAdditionalRenderState().setWireframe(true);
+        matWireFrame.setName("Wireframe");
 
         //Material showing normals
         matNormals = new Material(app.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
+        matNormals.setName("Normals");
 
         //A material with a debug texture
         matDebug = new Material(app.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
@@ -112,6 +115,7 @@ public class Materials extends AbstractAppState {
         matDebug.setColor("Diffuse", ColorRGBA.White);
         matDebug.setColor("Specular", ColorRGBA.White);
         matDebug.setFloat("Shininess", 64f);  // [0,128]
+        matDebug.setName("Debug");
 
         //Solid colors
         matSolidBlack = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
@@ -178,6 +182,7 @@ public class Materials extends AbstractAppState {
         matStoneWall.setColor("Diffuse", ColorRGBA.White);
         matStoneWall.setColor("Specular", ColorRGBA.White);
         matStoneWall.setFloat("Shininess", 64f);  // [0,128]
+        matStoneWall.setName("Stone wall");
 
         materialCurrent = matDebug;
     }
