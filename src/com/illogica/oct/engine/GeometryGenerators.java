@@ -17,6 +17,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Line;
+import com.jme3.util.TangentBinormalGenerator;
 
 /**
  *
@@ -115,6 +116,7 @@ public class GeometryGenerators {
      */
     public static Geometry boxByMat(Material mat){
         Box b = new Box(0.5f, 0.5f, 0.5f);
+        TangentBinormalGenerator.generate(b);
         Geometry geom = new Geometry("Box", b);
         geom.setMaterial(mat);
         return geom;

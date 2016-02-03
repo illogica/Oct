@@ -12,6 +12,7 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -67,18 +68,23 @@ public class Hud extends AbstractAppState implements ScreenController{
         
         
         //TEST
-        float boxHeight = Display.getHeight() / 10f;
+        float boxHeight = Display.getHeight() / 5f;
         currentMaterialBox = GeometryGenerators.boxByMat(sm.getState(Materials.class).getMaterial(Materials.MAT_STONE_WALL));
         this.app.getGuiNode().attachChild(currentMaterialBox);
         currentMaterialBox.setLocalTranslation( boxHeight - 10f, Display.getHeight() - boxHeight - 10f, 0f);
         currentMaterialBox.rotate(0.1f, 0f, 0f);
         currentMaterialBox.setLocalScale(boxHeight);
         
-            /** A white, directional light source */ 
+        /** A white, directional light source */ 
         DirectionalLight sun = new DirectionalLight();
-        sun.setDirection((new Vector3f(0f, -0.5f, -0.5f)).normalizeLocal());
+        sun.setDirection((new Vector3f(1f, -1f, -1f)).normalizeLocal());
         sun.setColor(ColorRGBA.White);
         this.app.getGuiNode().addLight(sun); 
+        
+        /** A white ambient light source. */ 
+        AmbientLight ambient = new AmbientLight();
+        ambient.setColor(ColorRGBA.White);
+        this.app.getGuiNode().addLight(ambient); 
     }
 
     @Override
