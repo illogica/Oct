@@ -65,8 +65,9 @@ public class Octant implements Savable, Comparable {
 
     //User data contained in this node
     private int id;
-    private int materialType;
-    private float[] vertices;
+    public OctantData data;
+    //private int materialType;
+    
 
     //Tree data structure stuff
     private Octant parent;
@@ -86,6 +87,7 @@ public class Octant implements Savable, Comparable {
      * @param octantType
      */
     private Octant(Octant parent, float size, Vector3f origin, byte depth, byte octantType) {
+        this.data = new OctantData(this);
         this.id = ID++;
         this.parent = parent;
         this.edgeSize = size;
@@ -93,9 +95,9 @@ public class Octant implements Savable, Comparable {
         this.depth = depth;
         this.octantType = octantType;
         if (parent != null) {
-            this.materialType = parent.materialType;// inherit material of the parent
+            this.data.materialType = parent.data.materialType;// inherit material of the parent
         } else {
-            this.materialType = Materials.MAT_AIR; //material for the root octant
+            this.data.materialType = Materials.MAT_AIR; //material for the root octant
         }
         System.out.println("Created node with id " + id);
     }
@@ -116,22 +118,6 @@ public class Octant implements Savable, Comparable {
             Octree.getListener().onOctantGenerated(o);
         }
         return o;
-    }
-
-    public boolean hasVertices() {
-        return vertices != null;
-    }
-
-    public float[] getVertices() {
-        if (hasVertices()) {
-            return vertices;
-        } else {
-            return null;
-        }
-    }
-
-    public void setVertices(float[] vertices) {
-        this.vertices = vertices;
     }
 
     public boolean hasChildren() {
@@ -173,7 +159,7 @@ public class Octant implements Savable, Comparable {
      * @return this Octant, useful for chaining
      */
     public Octant setMaterialType(int newType) {
-        this.materialType = newType;
+        this.data.materialType = newType;
 
         if (Octree.getListener() != null) {
             Octree.getListener().onOctantMaterialChanged(this);
@@ -183,7 +169,7 @@ public class Octant implements Savable, Comparable {
     }
 
     public int getMaterialType() {
-        return materialType;
+        return data.materialType;
     }
 
     /**
@@ -218,6 +204,39 @@ public class Octant implements Savable, Comparable {
             default:
                 return null;
         }
+    }
+    
+    public boolean hasNeighbor(int side){
+        byte d = this.depth;
+        while(d > 0){
+            Octant o = null;
+            switch (side) {
+                case SIDE_FRONT:
+                    o = getOctant(origin.add(Vector3f.UNIT_Z.mult(edgeSize)), d);
+                    break;
+                case SIDE_RIGHT:
+                    o = getOctant(origin.add(Vector3f.UNIT_X.mult(edgeSize)), d);
+                    break;
+                case SIDE_BACK:
+                    o = getOctant(origin.add(Vector3f.UNIT_Z.mult(-edgeSize)), d);
+                    break;
+                case SIDE_LEFT:
+                    o = getOctant(origin.add(Vector3f.UNIT_X.mult(-edgeSize)), d);
+                    break;
+                case SIDE_TOP:
+                    o = getOctant(origin.add(Vector3f.UNIT_Y.mult(edgeSize)), d);
+                    break;
+                case SIDE_BOTTOM:
+                    o = getOctant(origin.add(Vector3f.UNIT_Y.mult(-edgeSize)), d);
+                    break;
+                default:
+                    break;
+            }
+            if(o != null && o.data.materialType!=Materials.MAT_AIR)
+                return true;
+            d--;
+        }
+        return false;
     }
 
     /**
@@ -325,7 +344,6 @@ public class Octant implements Savable, Comparable {
         capsule.write(origin, "origin", new Vector3f());
         capsule.write(edgeSize, "edgeSize", 0f);
         capsule.write(octantType, "octantType", (byte) 0);
-        capsule.write(materialType, "materialType", 0);
         capsule.write(parent, "parent", null);
         capsule.write(children, "children", null);
     }
@@ -338,7 +356,6 @@ public class Octant implements Savable, Comparable {
         origin = (Vector3f) capsule.readSavable("origin", new Vector3f());
         edgeSize = capsule.readFloat("edgeSize", 0f);
         octantType = capsule.readByte("octantType", (byte) 0);
-        materialType = capsule.readInt("materialType", 0);
         parent = (Octant) capsule.readSavable("parent", null);
         children = (Octant[]) capsule.readSavableArray("children", null);
     }

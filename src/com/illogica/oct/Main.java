@@ -39,6 +39,7 @@ public class Main extends SimpleApplication {
         //initCrossHairs();
 
         GeometryGenerators.initialize(assetManager);
+        
     }
 
     @Override

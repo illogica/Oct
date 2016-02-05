@@ -52,11 +52,6 @@ public class Materials extends AbstractAppState {
     //STONE TEXTURES          200    
     public static final int MAT_STONE_WALL = 200;
 
-    private AppStateManager stateManager;
-    private SimpleApplication app;
-
-    private Material materialCurrent; //the current material
-
     //Debug colors
     private Material matRandomColor;
     private Material matWireFrame;
@@ -84,6 +79,11 @@ public class Materials extends AbstractAppState {
 
     //Textures
     private Material matStoneWall;
+    
+    private AppStateManager stateManager;
+    private SimpleApplication app;
+
+    private int currentMaterialId;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -184,7 +184,7 @@ public class Materials extends AbstractAppState {
         matStoneWall.setFloat("Shininess", 64f);  // [0,128]
         matStoneWall.setName("Stone wall");
 
-        materialCurrent = matDebug;
+        currentMaterialId = MAT_WIREFRAME;
     }
     
     public Material getSelectionBoxMaterial(){
@@ -192,75 +192,42 @@ public class Materials extends AbstractAppState {
     }
 
     public Material getCurrentMaterial() {
-        return materialCurrent;
+        return getMaterial(currentMaterialId);
+    }
+    
+    public int getCurrentMaterialId(){
+        return currentMaterialId;
+    }
+    
+    public void setCurrentMaterialId(int id){
+        this.currentMaterialId = id;
     }
 
     public Material getMaterial(int id) {
+        currentMaterialId = id;
         switch (id) {
-            case MAT_AIR:
-                return null;
-            case MAT_RANDOM_COLOR:
-                materialCurrent = matRandomColor;
-                break;
-            case MAT_WIREFRAME:
-                materialCurrent = matWireFrame;
-                break;
-            case MAT_NORMALS:
-                materialCurrent = matNormals;
-                break;
-            case MAT_DEBUG:
-                materialCurrent = matDebug;
-                break;
-            case MAT_SOLID_BLACK:
-                materialCurrent = matSolidBlack;
-                break;
-            case MAT_SOLID_WHITE:
-                materialCurrent = matSolidWhite;
-                break;
-            case MAT_SOLID_DARKGRAY:
-                materialCurrent = matSolidDarkGray;
-                break;
-            case MAT_SOLID_GRAY:
-                materialCurrent = matSolidGray;
-                break;
-            case MAT_SOLID_LIGHTGRAY:
-                materialCurrent = matSolidLightGray;
-                break;
-            case MAT_SOLID_RED:
-                materialCurrent = matSolidRed;
-                break;
-            case MAT_SOLID_GREEN:
-                materialCurrent = matSolidGreen;
-                break;
-            case MAT_SOLID_BLUE:
-                materialCurrent = matSolidBlue;
-                break;
-            case MAT_SOLID_YELLOW:
-                materialCurrent = matSolidYellow;
-                break;
-            case MAT_SOLID_MAGENTA:
-                materialCurrent = matSolidMagenta;
-                break;
-            case MAT_SOLID_CYAN:
-                materialCurrent = matSolidCyan;
-                break;
-            case MAT_SOLID_ORANGE:
-                materialCurrent = matSolidOrange;
-                break;
-            case MAT_SOLID_BROWN:
-                materialCurrent = matSolidBrown;
-                break;
-            case MAT_SOLID_PINK:
-                materialCurrent = matSolidPink;
-                break;
-
-            case MAT_TRANSPARENT_GREEN:
-                materialCurrent = matTransparentGreen;
-                break;
-            case MAT_STONE_WALL:
-                materialCurrent = matStoneWall;
-                break;
+            case MAT_AIR: return null;
+            case MAT_RANDOM_COLOR: return matRandomColor;
+            case MAT_WIREFRAME: return matWireFrame;
+            case MAT_NORMALS: return matNormals;
+            case MAT_DEBUG: return matDebug;
+            case MAT_SOLID_BLACK: return matSolidBlack;
+            case MAT_SOLID_WHITE: return matSolidWhite;
+            case MAT_SOLID_DARKGRAY: return matSolidDarkGray;
+            case MAT_SOLID_GRAY: return matSolidGray;
+            case MAT_SOLID_LIGHTGRAY: return matSolidLightGray;
+            case MAT_SOLID_RED: return matSolidRed;
+            case MAT_SOLID_GREEN: return matSolidGreen;
+            case MAT_SOLID_BLUE: return matSolidBlue;
+            case MAT_SOLID_YELLOW: return matSolidYellow;
+            case MAT_SOLID_MAGENTA: return matSolidMagenta;
+            case MAT_SOLID_CYAN: return matSolidCyan;
+            case MAT_SOLID_ORANGE: return matSolidOrange;
+            case MAT_SOLID_BROWN: return matSolidBrown;
+            case MAT_SOLID_PINK: return matSolidPink;
+            case MAT_TRANSPARENT_GREEN: return matTransparentGreen;
+            case MAT_STONE_WALL: return matStoneWall;
+            default: return matDebug;
         }
-        return materialCurrent;
     }
 }

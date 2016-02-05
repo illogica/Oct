@@ -65,15 +65,9 @@ public class Hud extends AbstractAppState implements ScreenController{
         
         //un-focus Nifty gui, bind() must have been already called
         screen.getFocusHandler().resetFocusElements();
-        
-        
-        //TEST
-        float boxHeight = Display.getHeight() / 5f;
-        currentMaterialBox = GeometryGenerators.boxByMat(sm.getState(Materials.class).getCurrentMaterial());
-        this.app.getGuiNode().attachChild(currentMaterialBox);
-        currentMaterialBox.setLocalTranslation( boxHeight - 10f, Display.getHeight() - boxHeight - 10f, 0f);
-        currentMaterialBox.rotate(0.1f, 0f, 0f);
-        currentMaterialBox.setLocalScale(boxHeight);
+
+        //Draw the small sample cube
+        resetTemplateMaterial();
         
         /** A white, directional light source */ 
         DirectionalLight sun = new DirectionalLight();
@@ -116,6 +110,17 @@ public class Hud extends AbstractAppState implements ScreenController{
     
     public void unfocusConsole(){
         screen.getFocusHandler().resetFocusElements();
+    }
+    
+    public void resetTemplateMaterial(){
+        //TEST
+        float boxHeight = Display.getHeight() / 10f;
+        currentMaterialBox = GeometryGenerators.boxByMat(sm.getState(Materials.class).getCurrentMaterial(), "SampleBox");
+        this.app.getGuiNode().detachChildNamed("SampleBox");
+        this.app.getGuiNode().attachChild(currentMaterialBox);
+        currentMaterialBox.setLocalTranslation( boxHeight - 10f, Display.getHeight() - boxHeight - 10f, 0f);
+        currentMaterialBox.rotate(0.1f, 0f, 0f);
+        currentMaterialBox.setLocalScale(boxHeight);
     }
 
     @Override

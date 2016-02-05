@@ -46,7 +46,6 @@ public class Octree implements OctreeEditor{
     private Octant root;
 
     private static OctreeListener listener;
-    private static int currentMaterial = Materials.MAT_RANDOM_COLOR;
 
     public Octant getRoot() {
         return root;
@@ -187,13 +186,6 @@ public class Octree implements OctreeEditor{
         return listener;
     }
     
-    public static void setMaterial(int material){
-        //TODO: a meaning of verifying if the material actually exists
-        Octree.currentMaterial = material;
-    }
-    
-    public static int getCurrentMaterial(){return currentMaterial;}
-    
     public static Octree createTemplateOctree(OctreeListener listener){
         Octree tree = new Octree();
         
@@ -271,7 +263,7 @@ public class Octree implements OctreeEditor{
         
         //Now generate the geometry:
         tree.generateRoot(FastMath.pow(2f, size) , Vector3f.ZERO)
-                .setMaterialType(Materials.MAT_RANDOM_COLOR);
+                .setMaterialType(Materials.MAT_WIREFRAME);
                 //.subdivide();
         
         return tree;
@@ -346,7 +338,7 @@ public class Octree implements OctreeEditor{
             currentOctant = currentOctant.getChildren()[octantType - (byte)1];
         }
         
-        currentOctant.setMaterialType(Octree.getCurrentMaterial());
+        //currentOctant.setMaterialType(materialId);
 
         if(currentOctant.hasChildren())
             currentOctant.deleteChildren();
@@ -354,8 +346,8 @@ public class Octree implements OctreeEditor{
     }
 
     @Override
-    public Octant changeOctantMaterial(Octant o, int material) {
-        return o.setMaterialType(material);
+    public Octant changeOctantMaterial(Octant o, int materialId) {
+        return o.setMaterialType(materialId);
     }
 
     @Override

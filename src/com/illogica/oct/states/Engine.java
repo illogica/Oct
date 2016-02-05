@@ -15,6 +15,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import java.util.List;
 
 /**
  *
@@ -36,7 +37,7 @@ public class Engine extends AbstractAppState {
         this.app = (SimpleApplication) app;
         this.sm = stateManager;
         //this.octree = Octree.createTemplateOctree(stateManager.getState(Renderer.class), 0);
-        this.octree = Octree.createSimpleTree(stateManager.getState(Renderer.class), (byte)3);
+        this.octree = Octree.createSimpleTree(stateManager.getState(Renderer.class), (byte)1);
     }
 
     @Override
@@ -62,7 +63,6 @@ public class Engine extends AbstractAppState {
         }
         
         octree.deleteOctant(octant);
-        sm.getState(Renderer.class).batch();
         onRefreshSelection();
     }
 
@@ -75,6 +75,20 @@ public class Engine extends AbstractAppState {
         sm.getState(SelectionManager.class).stepDecrease();
         onRefreshSelection();
     }
+    
+    /**
+     * Apply the given material to the current selection.
+     * If nothing is selected, just change the current material.
+     * @param meterialId the material Id
+     */
+    public void setMaterial(int meterialId){
+        sm.getState(Materials.class).setCurrentMaterialId(meterialId);
+        List<Octinfo> ois = sm.getState(SelectionManager.class).selectionBoxesOctinfos();
+        for(Octinfo oi : ois){
+            octree.getOctant(oi).setMaterialType(meterialId);
+        }
+        sm.getState(Hud.class).resetTemplateMaterial();
+    }
 
     public void onExtrudeOctantRequest() {
 
@@ -82,8 +96,11 @@ public class Engine extends AbstractAppState {
         Octinfo oi = sm.getState(SelectionManager.class).getLastSelectionOctinfo();
         Vector3f position = oi.origin().add(cs.getContactNormal().mult(oi.size));
         Octinfo o = new Octinfo(position, oi.size, oi.depth);
-        octree.createOctant(o);
-        //sm.getState(Renderer.class).batch();
+        
+        //Create the octant and set its material
+        Octant newOctant = octree.createOctant(o);
+        newOctant.setMaterialType(sm.getState(Materials.class).getCurrentMaterialId());
+        
         onRefreshSelection();
     }
 
@@ -107,6 +124,13 @@ public class Engine extends AbstractAppState {
             System.out.println("Left neighbor is " + o.getNeighbor(3));
             System.out.println("Top neighbor is " + o.getNeighbor(4));
             System.out.println("Bottom neighbor is " + o.getNeighbor(5));
+            System.out.println("hasNeighbor FRONT: " + o.hasNeighbor(Octree.SIDE_FRONT));
+            System.out.println("hasNeighbor RIGHT: " + o.hasNeighbor(Octree.SIDE_RIGHT));
+            System.out.println("hasNeighbor BACK: " + o.hasNeighbor(Octree.SIDE_BACK));
+            System.out.println("hasNeighbor LEFT: " + o.hasNeighbor(Octree.SIDE_LEFT));
+            System.out.println("hasNeighbor TOP: " + o.hasNeighbor(Octree.SIDE_TOP));
+            System.out.println("hasNeighbor BOTTOM: " + o.hasNeighbor(Octree.SIDE_BOTTOM));
+            
         } else {
             System.out.println("Selected nothing.");
         }

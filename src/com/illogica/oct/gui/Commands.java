@@ -16,6 +16,7 @@ public interface Commands {
     public int connect(String host);
     public int connect(String host, int port);
     public void quit(); //quit the application
+    public void setMaterial(int material);
     public void setMoveSpeed(float speed);
     public int start(); //starts a server
     public void stop(); //stops a server

@@ -112,12 +112,13 @@ public class GeometryGenerators {
      * Generates a unit cube with a given material.
      * Useful for the Gui
      * @param mat the material to use
+     * @param name a name to identify the box
      * @return 
      */
-    public static Geometry boxByMat(Material mat){
+    public static Geometry boxByMat(Material mat, String name){
         Box b = new Box(0.5f, 0.5f, 0.5f);
         TangentBinormalGenerator.generate(b);
-        Geometry geom = new Geometry("Box", b);
+        Geometry geom = new Geometry(name, b);
         geom.setMaterial(mat);
         return geom;
     }

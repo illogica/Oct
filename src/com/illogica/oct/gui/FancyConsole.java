@@ -6,6 +6,7 @@
 package com.illogica.oct.gui;
 
 import com.illogica.oct.server.Server;
+import com.illogica.oct.states.Engine;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
 import com.jme3.network.Network;
@@ -43,13 +44,14 @@ public class FancyConsole implements Commands {
         consoleCommands.registerCommand("connect address", connectCommand);
         consoleCommands.registerCommand("connect address port", connectCommand);
         consoleCommands.registerCommand("quit", new QuitCommand());
+        consoleCommands.registerCommand("setmaterial mat_id", new SetMaterialCommand());
         consoleCommands.registerCommand("setmovespeed speed", new SetMoveSpeedCommand());
         consoleCommands.registerCommand("start", new StartCommand());
         consoleCommands.registerCommand("stop", new StopCommand());
 
         // finally enable command completion
         consoleCommands.enableCommandCompletion(true);
-        console.output("Hello :) \\#fa0#press ESC to switch between console and 3d world");
+        console.output("Hello :) \\#fa0#press F1 to switch between console and 3d world");
     }
 
     public void print(String line) {
@@ -124,6 +126,11 @@ public class FancyConsole implements Commands {
         app.getFlyByCamera().setMoveSpeed(speed);
     }
 
+    @Override
+    public void setMaterial(int material) {
+        app.getStateManager().getState(Engine.class).setMaterial(material);
+    }
+
     /**
      * *****
      * COMMANDS THAT CAN BE EXECUTED ON THIS CONSOLE
@@ -162,6 +169,26 @@ public class FancyConsole implements Commands {
             quit();
         }
     }
+    
+    class SetMaterialCommand implements ConsoleCommand {
+
+        @Override
+        public void execute(String... strings) {
+            if (strings.length == 1) {
+                console.output("Missing material id");
+            }
+            if (strings.length > 1) {
+                int material;
+                try{
+                    material = Integer.parseInt(strings[1]);    
+                    setMaterial(material);
+                } catch (NumberFormatException e){
+                    console.output("Material must be an Integer number");
+                }
+            }
+        }
+        
+    }
 
     class SetMoveSpeedCommand implements ConsoleCommand {
 
@@ -181,7 +208,7 @@ public class FancyConsole implements Commands {
             }
         }
     }
-
+    
     class StartCommand implements ConsoleCommand {
 
         @Override

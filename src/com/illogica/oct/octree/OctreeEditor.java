@@ -23,6 +23,6 @@ public interface OctreeEditor {
     public Octant deleteOctant(Octant o);
     public Octant createOctant(Octinfo o);
     public Octant subdivideOctant(Octant o);
-    public Octant changeOctantMaterial(Octant o, int Material);
+    public Octant changeOctantMaterial(Octant o, int MaterialId);
    
 }

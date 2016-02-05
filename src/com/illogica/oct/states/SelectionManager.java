@@ -15,6 +15,9 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Selection Geometry is the geometry used to decorate an existing object in
@@ -104,10 +107,22 @@ public class SelectionManager extends AbstractAppState {
             selectionBoxes.attachChild(GeometryGenerators.getCubeByOctinfo(oi, sm.getState(Materials.class).getSelectionBoxMaterial()));
     }
     
+    /**
+     * Returns a list of Octinfos from all the currently selection boxes
+     * @return 
+     */
+    public List<Octinfo> selectionBoxesOctinfos(){
+        List<Octinfo> ois = new ArrayList<Octinfo>();
+        for(Spatial s: selectionBoxes.getChildren()){
+            ois.add((Octinfo) s.getUserData("Octinfo"));
+        }
+        return ois;
+    }
+    
     public byte getStep() {
         return step;
     }
-
+    
     public void setStep(byte step) {
         if (step > (byte) 0 && step <= MAX_DEPTH) {
             this.step = step;

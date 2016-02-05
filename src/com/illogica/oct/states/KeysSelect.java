@@ -41,6 +41,7 @@ public class KeysSelect extends AbstractAppState {
         "Increase step",
         "Decrease step",
         "MouseSelect",
+        "Esc"
     };
     
     private final static String[] modifierKeys = new String[]{
@@ -79,7 +80,8 @@ public class KeysSelect extends AbstractAppState {
         
         this.app.getInputManager().addMapping("MouseSelect", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         
-        this.app.getInputManager().addMapping("Switch Gui - 3d world", new KeyTrigger(KeyInput.KEY_ESCAPE));
+        this.app.getInputManager().addMapping("Switch Gui - 3d world", new KeyTrigger(KeyInput.KEY_F1));
+        this.app.getInputManager().addMapping("Esc", new KeyTrigger(KeyInput.KEY_ESCAPE));
         this.app.getInputManager().addMapping("Subdivide", new KeyTrigger(KeyInput.KEY_1));
         this.app.getInputManager().addMapping("Increase step", new KeyTrigger(KeyInput.KEY_PGUP));
         this.app.getInputManager().addMapping("Decrease step", new KeyTrigger(KeyInput.KEY_PGDN));
@@ -177,6 +179,8 @@ public class KeysSelect extends AbstractAppState {
                 stateManager.getState(Engine.class).decreaseStep();
             } else if(name.equals("MouseSelect") && keyPressed){
                 stateManager.getState(Engine.class).onMouseSelect();
+            } else if(name.equals("Esc") && keyPressed){
+                stateManager.getState(SelectionManager.class).selectionBoxesClear();
             }
         }
     };

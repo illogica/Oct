@@ -6,6 +6,7 @@
 package com.illogica.oct.engine;
 
 import com.illogica.oct.octree.Octant;
+import com.illogica.oct.octree.Octree;
 import com.jme3.material.Material;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -14,6 +15,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.VertexBuffer;
+import com.jme3.util.BufferUtils;
 import com.jme3.util.TangentBinormalGenerator;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -49,7 +51,7 @@ public class Qube2 extends Node {
     private void updateGeometry(Octant o, Material mat) {
         this.detachAllChildren();
         quad = new QuadV4[6];
-        geom = new Geometry[6];
+        //geom = new Geometry[6];
 
         //see if n.hasVertices(), then do this:
         this.o = o;
@@ -89,29 +91,62 @@ public class Qube2 extends Node {
     }
     
     private void mergeSides(){
-        FloatBuffer position = FloatBuffer.allocate(12*6);
-        FloatBuffer tex = FloatBuffer.allocate(8*6);
-        FloatBuffer normal = FloatBuffer.allocate(12*6);
-        ShortBuffer indices = ShortBuffer.allocate(6*6);
-                
+        
+        int sidesCount = 6;
+        boolean hiddenSides[] = new boolean[]{false,false,false,false,false,false};
+        
+        if(o.hasNeighbor(Octree.SIDE_FRONT)){
+            sidesCount--;
+            hiddenSides[0] = true;
+        }
+        if(o.hasNeighbor(Octree.SIDE_LEFT)){
+            sidesCount--;
+            hiddenSides[1] = true;
+        }
+        if(o.hasNeighbor(Octree.SIDE_BACK)){
+            sidesCount--;
+            hiddenSides[2] = true;
+        }
+        if(o.hasNeighbor(Octree.SIDE_RIGHT)){
+            sidesCount--;
+            hiddenSides[3] = true;
+        }
+        if(o.hasNeighbor(Octree.SIDE_TOP)){
+            sidesCount--;
+            hiddenSides[4] = true;
+        }
+        if(o.hasNeighbor(Octree.SIDE_BOTTOM)){
+            sidesCount--;
+            hiddenSides[5] = true;
+        }
+        
+        FloatBuffer position = FloatBuffer.allocate(12*sidesCount);
+        FloatBuffer tex = FloatBuffer.allocate(8*sidesCount);
+        FloatBuffer normal = FloatBuffer.allocate(12*sidesCount);
+        ShortBuffer indices = ShortBuffer.allocate(6*sidesCount);
+        
+        int cnt = 0;
         for (int i = 0; i < 6; i++) {
-            quad[i] = quadBySide(i);
-            //System.out.println(quad[i].getBufferList());
-            position.put(quad[i].positionArray);
-            tex.put(quad[i].texCoordsArray);
-            normal.put(quad[i].normalArray);
+            if(!hiddenSides[i]){
+                quad[cnt] = quadBySide(i);
+                //System.out.println(quad[i].getBufferList());
+                position.put(quad[cnt].positionArray);
+                tex.put(quad[cnt].texCoordsArray);
+                normal.put(quad[cnt].normalArray);
             
-            for(int j=0; j<quad[i].indexArray.length; j++){
-                short val = quad[i].indexArray[j];
-                val += 4*i;
-                indices.put(val);
+                for(int j=0; j<quad[cnt].indexArray.length; j++){
+                    short val = quad[cnt].indexArray[j];
+                    val += 4*cnt;
+                    indices.put(val);
+                }
+                cnt++;
             }
+            
             //geom[i] = new Geometry("Q" + i, quad[i]);
             //geom[i].setMaterial(mat);
             //this.attachChild(geom[i]);
         }
         
-
         m = new Mesh();
         m.setBuffer(VertexBuffer.Type.Position, 3, position);
         m.setBuffer(VertexBuffer.Type.TexCoord, 2, tex);

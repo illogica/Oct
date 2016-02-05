@@ -5,13 +5,16 @@
  */
 package com.illogica.oct.states;
 
+import com.illogica.oct.engine.GeometryGenerators;
 import com.illogica.oct.octree.Octree;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.shape.Box;
 
 /**
  *
