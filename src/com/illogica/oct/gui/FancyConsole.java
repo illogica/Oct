@@ -44,7 +44,7 @@ public class FancyConsole implements Commands {
         consoleCommands.registerCommand("connect address", connectCommand);
         consoleCommands.registerCommand("connect address port", connectCommand);
         consoleCommands.registerCommand("quit", new QuitCommand());
-        consoleCommands.registerCommand("setmaterial mat_id", new SetMaterialCommand());
+        consoleCommands.registerCommand("setmat mat_id", new SetMaterialCommand());
         consoleCommands.registerCommand("setmovespeed speed", new SetMoveSpeedCommand());
         consoleCommands.registerCommand("start", new StartCommand());
         consoleCommands.registerCommand("stop", new StopCommand());

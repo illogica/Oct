@@ -201,10 +201,11 @@ public class Materials extends AbstractAppState {
     
     public void setCurrentMaterialId(int id){
         this.currentMaterialId = id;
+        stateManager.getState(Hud.class).resetTemplateMaterial();
     }
 
     public Material getMaterial(int id) {
-        currentMaterialId = id;
+
         switch (id) {
             case MAT_AIR: return null;
             case MAT_RANDOM_COLOR: return matRandomColor;

@@ -85,9 +85,12 @@ public class Engine extends AbstractAppState {
         sm.getState(Materials.class).setCurrentMaterialId(meterialId);
         List<Octinfo> ois = sm.getState(SelectionManager.class).selectionBoxesOctinfos();
         for(Octinfo oi : ois){
-            octree.getOctant(oi).setMaterialType(meterialId);
+            Octant o = octree.getOctant(oi);
+            if(o!=null)
+                o.setMaterialType(meterialId);
+            else
+                System.out.println("Can't apply material, non existent octant for " + oi);
         }
-        sm.getState(Hud.class).resetTemplateMaterial();
     }
 
     public void onExtrudeOctantRequest() {
