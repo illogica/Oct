@@ -37,7 +37,7 @@ public class Engine extends AbstractAppState {
         this.app = (SimpleApplication) app;
         this.sm = stateManager;
         //this.octree = Octree.createTemplateOctree(stateManager.getState(Renderer.class), 0);
-        this.octree = Octree.createSimpleTree(stateManager.getState(Renderer.class), (byte)1);
+        this.octree = Octree.createSimpleTree(stateManager.getState(Renderer.class), (byte)2);
     }
 
     @Override
@@ -99,7 +99,9 @@ public class Engine extends AbstractAppState {
         
         //Create the octant and set its material
         Octant newOctant = octree.createOctant(o);
-        newOctant.setMaterialType(sm.getState(Materials.class).getCurrentMaterialId());
+        if(newOctant!=null){
+            newOctant.setMaterialType(sm.getState(Materials.class).getCurrentMaterialId());
+        }
         
         onRefreshSelection();
     }

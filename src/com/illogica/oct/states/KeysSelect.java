@@ -121,7 +121,7 @@ public class KeysSelect extends AbstractAppState {
         return currentMode;
     }
     
-    private void switchToGuiMode(){
+    public void switchToGuiMode(){
         currentMode = MODE_EDIT_GUI;
         stateManager.getState(Hud.class).focusToConsole();
         app.getInputManager().removeListener(actionListenerEditMode3D);
@@ -129,10 +129,9 @@ public class KeysSelect extends AbstractAppState {
         app.getInputManager().addListener(actionListenerEditModeGui, keyboardMappings);
         app.getInputManager().addListener(analogListenerEditModeGui, mouseMappings);
         app.getFlyByCamera().setDragToRotate(true);
-        System.out.println("Switched to Gui mode");
     } 
     
-    private void switchTo3dEditMode(){
+    public void switchTo3dEditMode(){
         currentMode = MODE_EDIT_3D;
         stateManager.getState(Hud.class).unfocusConsole();
         app.getInputManager().removeListener(actionListenerEditModeGui);
@@ -140,7 +139,6 @@ public class KeysSelect extends AbstractAppState {
         app.getInputManager().addListener(actionListenerEditMode3D, keyboardMappings);
         app.getInputManager().addListener(analogListenerEditMode3D, mouseMappings);
         app.getFlyByCamera().setDragToRotate(false);
-        System.out.println("Switched to 3D mode");
     }
     
     private final ActionListener actionListenerModifierKeys = new ActionListener() {

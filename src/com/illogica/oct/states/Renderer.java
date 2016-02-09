@@ -6,8 +6,6 @@
 package com.illogica.oct.states;
 
 import com.illogica.oct.engine.GeometryGenerators;
-import com.illogica.oct.engine.MaterialUndefinedException;
-import com.illogica.oct.engine.Qube2;
 import com.illogica.oct.octree.Octant;
 import com.illogica.oct.octree.Octinfo;
 import com.illogica.oct.octree.Octree;
@@ -18,28 +16,22 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.BatchNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.TangentBinormalGenerator;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Takes an Octree and a SimpleApplication and attaches the visible Octree cubes
@@ -59,9 +51,6 @@ public class Renderer extends AbstractAppState implements OctreeListener{
     
     Map<Integer, List<Octant>> nodes; //visible octants subdivided by material
     
-    //Map<Integer,BatchNode> batchNodes; //one batch for each material
-    //HashSet<BatchNode> toBatch;
-    
     @Override
     public void setOctree(Octree tree){
         this.octree = tree;
@@ -77,8 +66,6 @@ public class Renderer extends AbstractAppState implements OctreeListener{
         selectionObjectScenegraphRoot = new Node("selection object root node");
         this.app.getRootNode().attachChild(octantsScenegraphRoot);
         this.app.getRootNode().attachChild(selectionObjectScenegraphRoot);
-        //this.batchNodes = new HashMap<Integer, BatchNode>();
-        //this.toBatch = new HashSet<BatchNode>();
         this.nodes = new HashMap<Integer, List<Octant>>();
         
         arrow = new Arrow(Vector3f.UNIT_X);
@@ -94,43 +81,20 @@ public class Renderer extends AbstractAppState implements OctreeListener{
     public void onOctantGenerated(Octant o) {
         int mat = o.getMaterialType();
         if(mat == Materials.MAT_AIR){
-            //System.out.println("GENERATED: Material air, do nothing");
             //do nothing, we don't show air
-        
         } else {
-            /*octantsScenegraphRoot.detachAllChildren();    
-            Geometry g = new Geometry("Mesh", );
-            g.setMaterial(stateManager.getState(Materials.class).getMaterial(Materials.MAT_DEBUG));
-            octantsScenegraphRoot.attachChild(g);*/
             
-            
-            //System.out.println("Compiled array in octant " + o.getId());
             //If the material has no associated list, create the list
             if(nodes.get(mat) == null){
                 nodes.put(mat, new ArrayList<Octant>());
-                System.out.println("Created list for material " + mat);
+                System.out.println("Renderer: Created list for material " + mat);
             }
             //then add the node to the map;
             nodes.get(mat).add(o);
-            System.out.println("Added octant " + o.getId() + " to list " + mat);
+            System.out.println("Renderer: Added octant " + o.getId() + " to list " + mat);
             
             compileMeshes();
-            
-            /*
-            Spatial s = new Qube2(o, stateManager.getState(Materials.class).getCurrentMaterial());
-            s.setName("Qube" + o.getId());
-            s.setUserData("Octant", o);
-            o.data.compileArrays();
-            
-            if(!batchNodes.containsKey(mat)){
-                BatchNode materialRoot = new BatchNode("Mat" + mat);
-                batchNodes.put(mat, materialRoot);
-                octantsScenegraphRoot.attachChild(materialRoot);
-            }
-            batchNodes.get(mat).attachChild(s);
-            batchNodes.get(mat).batch();*/
         }
-        //toBatch.add(batchNodes.get(mat));
     }
     
     private void compileMeshes(){
@@ -183,7 +147,6 @@ public class Renderer extends AbstractAppState implements OctreeListener{
             System.out.println("Removed octant " + o.getId() + " from nodes");
         }
         compileMeshes();
-        //octantsScenegraphRoot.detachChildNamed("Qube" + o.getId());
     }
     
     @Override
@@ -197,29 +160,6 @@ public class Renderer extends AbstractAppState implements OctreeListener{
         }
         
         onOctantGenerated(o);
-        /*
-        //find the node among the BatchNodes
-        Node toBeEdited = null;
-        for(BatchNode b: batchNodes.values()){
-            toBeEdited = (Node)b.getChild("Qube" + o.getId());
-            
-            if(toBeEdited != null){
-                int detachChild = toBeEdited.getParent().detachChild(toBeEdited);
-                    if(detachChild== -1){
-                } else {
-                        
-                    //TODO: this is a huge bottleneck
-                    toBatch.add(b);
-                    //b.batch();   //with batchnodes, you need to call this at every detach()
-                }
-                onOctantGenerated(o);
-                return;
-            }
-        }
-        
-        if(toBeEdited == null){
-            onOctantGenerated(o);
-        }*/
     }
     
     private boolean removeOctant(Octant o){

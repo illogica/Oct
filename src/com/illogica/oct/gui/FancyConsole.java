@@ -7,6 +7,7 @@ package com.illogica.oct.gui;
 
 import com.illogica.oct.server.Server;
 import com.illogica.oct.states.Engine;
+import com.illogica.oct.states.KeysSelect;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
 import com.jme3.network.Network;
@@ -52,6 +53,10 @@ public class FancyConsole implements Commands {
         // finally enable command completion
         consoleCommands.enableCommandCompletion(true);
         console.output("Hello :) \\#fa0#press F1 to switch between console and 3d world");
+    }
+    
+    private void exitConsole(){
+        app.getStateManager().getState(KeysSelect.class).switchTo3dEditMode();
     }
 
     public void print(String line) {
@@ -124,11 +129,13 @@ public class FancyConsole implements Commands {
     @Override
     public void setMoveSpeed(float speed) {
         app.getFlyByCamera().setMoveSpeed(speed);
+        exitConsole();
     }
 
     @Override
     public void setMaterial(int material) {
         app.getStateManager().getState(Engine.class).setMaterial(material);
+        exitConsole();
     }
 
     /**

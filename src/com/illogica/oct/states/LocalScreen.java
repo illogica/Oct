@@ -11,6 +11,7 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.app.state.VideoRecorderAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -75,7 +76,7 @@ public class LocalScreen extends AbstractAppState{
         this.app.getStateManager().attach(engineAppState);
         this.app.getStateManager().attach(hud);
         this.app.getStateManager().attach(keysSelectAppstate);
-        //stateManager.attach(new VideoRecorderAppState()); //start recording
+        //stateManager.attach(new VideoRecorderAppState(1.0f, 60)); //start recording
         
     }
 

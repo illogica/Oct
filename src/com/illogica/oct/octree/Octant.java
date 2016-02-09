@@ -99,7 +99,7 @@ public class Octant implements Savable, Comparable {
         } else {
             this.data.materialType = Materials.MAT_AIR; //material for the root octant
         }
-        System.out.println("Created node with id " + id);
+        System.out.println("Octant: Created node with id " + id + " and material " + data.materialType);
     }
 
     /**
