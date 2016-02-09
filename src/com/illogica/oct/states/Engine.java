@@ -37,7 +37,7 @@ public class Engine extends AbstractAppState {
         this.app = (SimpleApplication) app;
         this.sm = stateManager;
         //this.octree = Octree.createTemplateOctree(stateManager.getState(Renderer.class), 0);
-        this.octree = Octree.createSimpleTree(stateManager.getState(Renderer.class), (byte)2);
+        this.octree = Octree.createSimpleTree(stateManager.getState(Renderer.class), (byte)3);
     }
 
     @Override

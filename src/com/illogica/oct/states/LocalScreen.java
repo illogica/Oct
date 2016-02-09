@@ -76,7 +76,7 @@ public class LocalScreen extends AbstractAppState{
         this.app.getStateManager().attach(engineAppState);
         this.app.getStateManager().attach(hud);
         this.app.getStateManager().attach(keysSelectAppstate);
-        //stateManager.attach(new VideoRecorderAppState(1.0f, 60)); //start recording
+        //stateManager.attach(new VideoRecorderAppState(1.0f, 30)); //start recording
         
     }
 
